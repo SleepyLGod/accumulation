@@ -1,0 +1,107 @@
+% hw07.tex 
+% Created by Jack Kasbeer (jkasbeer) on October 20, 2015
+%
+% Principles of Functional Programming
+% 15-150
+% Assignment 07
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+
+\oddsidemargin0cm
+\topmargin-2cm     
+\textwidth16.5cm   
+\textheight23.5cm  
+
+\newcommand{\question}[2] {\vspace{.25in} \hrule\vspace{0.5em}
+\noindent{\bf #1: #2} \vspace{0.5em}
+\hrule \vspace{.10in}}
+\renewcommand{\part}[1] {\vspace{.10in} {\bf (#1)}}
+
+\newcommand{\myname}{Jack Kasbeer}
+\newcommand{\myandrew}{jkasbeer@andrew.cmu.edu}
+\newcommand{\myhwnum}{08}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+ 
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{\textbf{HW\myhwnum}}}     
+\rhead{\fancyplain{}{\myname\\ \myandrew}}
+\chead{\fancyplain{}{15-150}}
+
+\begin{document}
+
+\medskip            
+\thispagestyle{plain}
+\begin{center} 
+{\Large 15-150 Assignment \myhwnum} \\
+\myname \\
+\myandrew \\
+Section K \\
+November 3, 2015 \\
+\end{center}
+
+% ##### TASK 2 ##### %
+\question{2}{Types}
+\begin{enumerate}
+% Task 2.1 
+\item \verb|fn : int -> int|
+% Task 2.2 
+\item \verb|fn : string list -> string list|
+% Task 2.23
+\item \verb|fn : int option list -> string|
+\end{enumerate}
+
+% ##### TASK 3 ##### %
+\question{3}{Exceptions}
+\begin{enumerate}
+% Task 3.1 
+\item \verb|findOneExn| is implemented in \verb|hw08.sml|
+% Task 3.2 
+\item \verb|findOneExnWeak| is implemented in \verb|hw08.sml|
+% Task 3.3 
+\item \verb|subset_sum_exn| is implemented in \verb|hw08.sml|
+\end{enumerate}
+
+% ##### TASK 4 ##### %
+\question{4}{Sudoku}
+\begin{enumerate}
+% Task 4.1
+\item \verb|filter| is implemented in \verb|hw08.sml|
+% Task 4.2
+\item \verb|exists| is implemented in \verb|hw08.sml|
+% Task 4.3
+\item \verb|relates| is implemented in \verb|hw08.sml|
+% Task 4.4
+\item \verb|clashes| is defined in \verb|hw08.sml|
+% Task 4.5
+\item \verb|init| is implemented in \verb|hw08.sml|
+% Task 4.6
+\item \verb|solver| is implemented in \verb|hw08.sml|
+% Task 4.7
+\item \verb|sudoku| is implemented in \verb|hw08.sml|
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

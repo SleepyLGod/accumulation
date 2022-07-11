@@ -1,0 +1,185 @@
+% hw06.tex 
+% Created by Jack Kasbeer (jkasbeer) on October 10, 2015
+%
+% Principles of Functional Programming
+% 15-150
+% Assignment 06
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+
+\oddsidemargin0cm
+\topmargin-2cm     
+\textwidth16.5cm   
+\textheight23.5cm  
+
+\newcommand{\question}[2] {\vspace{.25in} \hrule\vspace{0.5em}
+\noindent{\bf #1: #2} \vspace{0.5em}
+\hrule \vspace{.10in}}
+\renewcommand{\part}[1] {\vspace{.10in} {\bf (#1)}}
+
+\newcommand{\myname}{Jack Kasbeer}
+\newcommand{\myandrew}{jkasbeer@andrew.cmu.edu}
+\newcommand{\myhwnum}{06}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+ 
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{\textbf{HW\myhwnum}}}     
+\rhead{\fancyplain{}{\myname\\ \myandrew}}
+\chead{\fancyplain{}{15-150}}
+
+\begin{document}
+
+\medskip            
+\thispagestyle{plain}
+\begin{center} 
+{\Large 15-150 Assignment \myhwnum} \\
+\myname \\
+\myandrew \\
+Section K \\
+October 13, 2015 \\
+\end{center}
+
+% ##### TASK 2 ##### %
+\question{2}{Polymorphic Universe}
+\begin{enumerate}
+% Task 2.1 
+\item ML runtime system says...\\
+\part{i} \verb|val map = fn : ('a -> 'b) -> 'a list -> 'b list|\\
+\part{ii} \verb|val map1 = fn : 'a list -> ('a -> 'b) -> 'b list|\\ 
+\part{iii} \verb|val map2 = fn : ('a -> 'b) list -> 'a -> 'b list|\\
+\part{iv} \verb|val map3 = fn : ('a -> 'b) * 'a list -> 'b list|\\
+\part{v} \verb|map4... Error: operator and operand don't agree... in expression: map4 f|
+% Task 2.2 
+\item \verb|map3| has type \verb|('a -> 'b) * 'a list -> 'b list|, so the expression \verb|(f x) :: map3 (f, L)| has type \verb|'b list| since (1) \verb|(f x)| has type \verb|'b| (\verb|f| has type \verb|'a -> 'b| and \verb|x| has type \verb|'a|), and (2) \verb|map3 (f, L)| has type \verb|'b list| since \verb|f : 'a -> 'b| and \verb|L : 'a list|, so \verb|map 3|'s type requirements are satisfied by this tuple.  Hence, \verb|(f x) :: map3 (f, L)| has type \verb|'b list| (\verb|(f x)| has type \verb|'b| and \verb|map3 (f, L)| has type \verb|'b list|, by definition).\\\\
+\verb|map4| has the same type as \verb|map3|, but it doesn't evaluate on run-time since the expression \verb|map4 f L| is not well-typed.  \verb|map4| expects a tuple of type \verb|('a -> 'b) * 'a list|, but in this expression, \verb|f L| has type \verb|('a -> 'b) -> 'b list|, which doesn't fit the type of \verb|map4| so a run-time error occurs for an operator and operand mismatch.
+% Task 2.3 
+\item For each expression, indicate: (1) Well-typed? (2) If so, type? (3) Summary of behavior\\\\
+\part{i} \verb|map (fn x => x ^ "!") ["Functions ", "are ", "Values"]| is well typed, with type \verb|(string -> string) -> (string list -> string list)|, and is an expression that calls \verb|map| on \verb|(fn x => x ^ "!") ["Functions ", "are ", "Values"]|, which evaluates to a \verb|string list| containing the elements of the input string list concatenated with "!"\\
+(\verb|["Functions !", "are !", "Values!"]|).\\\\
+\part{ii} \verb|map (fn (x,y) => (x-1, y ^ y)) [(1, "f"), ("o", 2), ("o", 3)]| is not well typed.  This is due to the input list's inconsistency of elements; the function \verb|(fn (x,y) => (x-1, y ^ y))| applies the \verb|int| operation \verb|-| to the first item in the tuple, and the string operation \verb|^| to the second item in the input tuple, but the input list in the expression, \verb|[(1, "f"), ("o", 2), ("o", 3)]|, has strings in the first item position and integers in the second item position in some of its elements.  Hence, an operator and operand mismatch occurs when trying to evaluate this expression.\\
+\end{enumerate}
+
+% ##### TASK 3 ##### %
+\question{3}{High Order Warp Jump}
+\begin{enumerate}
+% Task 3.1
+\item Prove: (LEMMA 1): For all types \verb|t1| and \verb|t2|, total funtion \verb|f : t1 * t2 -> t2|, and values \verb|z : t2| and \verb|L : t1 list|,
+\begin{center} \verb|foldr f z (L@[y]) = foldr f (f(y,z)) L|\end{center}
+\begin{proof}
+% Intro
+Let $P(n)$ be the proposition stated above, where $n$ is the length of \verb|L|.  We will prove $\forall n \geq 0.\, P(n)$ by strong induction on $n$.\\\\
+% Base Case
+\textbf{Base Case $n = 0$:} \verb|length L = 0| $\Rightarrow P(0):$ \verb|foldr f z ([] @ [y]) = foldr f (f(y,z)) L|.  Evaluating the left side...\\
+\verb|foldr f z ([] @ [y]) => foldr f z [y] = foldr f z (x::[y]) = f(y, foldr f z [])|\\\\
+Evaluating the right side...\\
+\verb|foldr f z [] => f(y,z)|\\
+\verb|foldr f (f(y,z)) [] => f(y,z)|\\\\
+Thus, when $n = 0$, \verb|foldr f z (L@[y]) = f(y,z) = foldr f (f(y,z)) L|.\\
+Hence, $P(0)$ holds.\\\\
+% Inductive Case
+\textbf{Inductive Case $n > 0$:} We have \verb|length L > 0|.  Assume that $P(1),...,P(k-1)$ hold for some integer $k$.\\
+% Inductive Hypothesis
+\textbf{Inductive Hypothesis: $P(k)$} WWTS that $P(k)$ holds, given that $P(1),...,P(k-1)$ hold.\\\\
+% Proof
+Now consider \verb|length L = k|.\\
+Then, \verb|foldr f z (L|$_k$\verb|@[y]) => foldr f z ((x::L|$_{k-1}$\verb|)@[y])|, and by Lemma a,\\ this evaluates to \verb|foldr f z (x::(L|$_{k-1}$\verb|@[y])) = f(x, foldr f z (L|$_{k-1}$\verb|@[y]))|\\
+By our IH, \verb|foldr f z (L|$_{k-1}$\verb|@[y])) = foldr f (f(y,z)) L|$_{k-1}$\\
+$\therefore$ \verb|f(x, foldr f z (L|$_{k-1}$\verb|@[y])) = f(x, foldr f (f(y,z)) L|$_{k-1}$\\\\
+% Conclusion
+Thus, $P(k)$ has been shown to be true, so by SPMI, it follows that $\forall n \geq 0.\, P(n)$.\\
+Hence, (LEMMA 1) has been proven.
+\end{proof}
+
+% Task 3.2
+\item Prove: For all types \verb|t| and values \verb|L : t list list|,
+\begin{center}\verb|flattenleft L = flattenright (rev L)|\end{center}
+\begin{flushleft}
+By definition, \verb|flattenleft L = foldl (fn (x,A) => A@x) [] L|, and \verb|flattenright L = foldr (fn (x,A) => A@x) [] L|.  To prove the above proposition, it is sufficient to show that \verb|(foldl (fn (x,A) => A@x) z L) = (foldr (fn (x,A) => A@x) z (rev L))| since \verb|flattenleft L = flattenright (rev L)| is an instance of the above equality where \verb|z = []|.
+\end{flushleft}
+\begin{proof}
+% Intro
+Let $P(n)$ be the strengthened proposition stated above, where $n$ is the length of \verb|L|.  We will prove $\forall n \geq 0.\, P(n)$ by strong induction on $n$.  Also let \verb|g| denote \verb|fn (x,A) => A@x|.\\\\
+% Base Case
+\textbf{Base Case $n = 0$:} \verb|length L = 0|\\
+ $\Rightarrow P(0):$ \verb|flattenleft [] = foldl g [] [] => []| and \verb|flattenright [] = foldr g [] [] => []|. So $P(0)$ holds trivially.\\
+\textbf{Base Case $n = 1$:} \verb|length L = 1|\\
+$\Rightarrow P(1):$ For some singleton \verb|[x]| (\verb|length [x] = 1|),\\
+\verb|flattenleft [x] = foldl g [] [x]| and\\
+\verb|foldl g [] [x] => foldl g (f(x,[])) [] => foldl g [x] [] = [x]|.\\
+Similarly, \verb|flattenright [x] = foldr g [] [x]| and\\
+\verb|foldr g [] [x] => f(x, foldr g [] []) => f(x, []) = [x]|.\\
+Hence, $P(1)$ also holds.\\
+% Inductive Case
+\textbf{Inductive Case $n > 1$:} We have \verb|length L > 1|.  Assume that $P(1),...,P(k-1)$ hold for some integer $k$.\\
+% Inductive Hypothesis
+\textbf{Inductive Hypothesis $P(k)$:} WWTS that $P(k)$ holds, given that $P(1),...,P(k-1)$ hold.\\\\
+% Proof
+Now consider \verb|length L = k|, and let \verb|L = x::(R@[y])| where \verb|x, R, [y]| are subsets of \verb|L|.\\
+Then, \verb|foldl g z (x::(R@[y])) = foldl g (g(x,z)) (R@[y]) => foldl g (z@x) (R@[y])| (Lemma c).  Notice that \verb|length (R@[y]) < k|.\\
+This means \verb|foldl g (z@x) (R@[y]) => foldr g (g(x,z)) (rev (R@[y]))| (Lemma c and IH).\\
+By Lemma 1, this then evaluates to 
+\begin{center}\verb|foldr g z (rev (R@[y]) @ [x])| \verb|=> foldr g z rev(x::(R@[y]))| (Lemma b) \end{center}
+Notice that \verb|L = x::(R@[y])|, so we have \verb|foldr g z (rev L)|, and we're done.\\
+% Conclusion
+Thus, $P(k)$ has been shown to be true, so by SPMI, it follows that $\forall n \geq 0.\, P(n)$.\\  Hence, the proposition has been proven.
+\end{proof}
+% Task 3.3
+\item \verb|costleft, costright| are defined in \verb|hw06.sml|
+% Task 3.4
+\item Through testing \verb|flattenleft L| and \verb|flattenright L| with various lengths, it can be shown that both \verb|flattenleft| and \verb|flattenright| are $O(n^3)$.
+\end{enumerate}
+
+% ##### TASK 4 ##### %
+\question{4}{Short Circuitry}
+\begin{enumerate}
+% Task 4.1
+\item Prove or disprove: (THM 1): For all types \verb|t1, t2| and values \verb|f : t1 -> bool|, \verb|g : t2 -> bool|, and \verb|x : t1|, \verb|y : t2|,
+\begin{center}\verb|(fn (a,b) => a orelse b) (f x, g y) = f x orelse g y|\end{center}
+\begin{proof}
+Suppose that \verb|f| is total and \verb|g| is not (i.e. it may fail to terminate) and assume that \verb|f(x) => true|.  Since \verb|orelse| uses short circuit evaluation, the RHS of the proposition will evaluate to \verb|true|, but the LHS will fail to terminate if \verb|y| is such that \verb|g(y)| fails to terminate (we know that such a \verb|y| exists since \verb|g| is assumed to not be a total function).
+\end{proof}
+\end{enumerate}
+
+% ##### TASK 5 ##### %
+\question{5}{Big Data}
+\begin{enumerate}
+% Task 5.1
+\item \verb|merge_histogram| is defined in \verb|hw06.sml|
+% Task 5.2
+\item \verb|create_histogram| is defined in \verb|hw06.sml|
+% Task 5.3
+\item \verb|corpus_histogram| is defined in \verb|hw06.sml|
+\end{enumerate}
+
+% ##### TASK 6 ##### %
+\question{6}{The Real GridWorld}
+\begin{enumerate}
+% Task 6.1
+\item \verb|path| is defined in \verb|hw06.sml|
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

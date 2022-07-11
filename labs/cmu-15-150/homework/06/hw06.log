@@ -1,0 +1,306 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  13 OCT 2015 22:39
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**hw06.tex
+(./hw06.tex
+LaTeX2e <2015/01/01>
+Babel <3.9l> and hyphenation patterns for 79 languages loaded.
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/size11.clo
+File: size11.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2013/01/14 v2.14 AMS math features
+\@mathmargin=\skip43
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0
+\@emptytoks=\toks14
+\ex@=\dimen103
+))
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d
+\pmbraise@=\dimen104
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 1999/12/14 v2.01 operator names
+)
+\inf@bad=\count87
+LaTeX Info: Redefining \frac on input line 210.
+\uproot@=\count88
+\leftroot@=\count89
+LaTeX Info: Redefining \overline on input line 306.
+\classnum@=\count90
+\DOTSCASE@=\count91
+LaTeX Info: Redefining \ldots on input line 378.
+LaTeX Info: Redefining \dots on input line 381.
+LaTeX Info: Redefining \cdots on input line 466.
+\Mathstrutbox@=\box26
+\strutbox@=\box27
+\big@size=\dimen105
+LaTeX Font Info:    Redeclaring font encoding OML on input line 566.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 567.
+\macc@depth=\count92
+\c@MaxMatrixCols=\count93
+\dotsspace@=\muskip10
+\c@parentequation=\count94
+\dspbrk@lvl=\count95
+\tag@help=\toks15
+\row@=\count96
+\column@=\count97
+\maxfields@=\count98
+\andhelp@=\toks16
+\eqnshift@=\dimen106
+\alignsep@=\dimen107
+\tagshift@=\dimen108
+\tagwidth@=\dimen109
+\totwidth@=\dimen110
+\lineht@=\dimen111
+\@envbody=\toks17
+\multlinegap=\skip44
+\multlinetaggap=\skip45
+\mathdisplay@stack=\toks18
+LaTeX Info: Redefining \[ on input line 2665.
+LaTeX Info: Redefining \] on input line 2666.
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amscls/amsthm.sty
+Package: amsthm 2015/03/04 v2.20.2
+\thm@style=\toks19
+\thm@bodyfont=\toks20
+\thm@headfont=\toks21
+\thm@notefont=\toks22
+\thm@headpunct=\toks23
+\thm@preskip=\skip46
+\thm@postskip=\skip47
+\thm@headsep=\skip48
+\dth@everypar=\toks24
+)
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(/usr/local/texlive/2015/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+\fancy@headwidth=\skip49
+\f@ncyO@elh=\skip50
+\f@ncyO@erh=\skip51
+\f@ncyO@olh=\skip52
+\f@ncyO@orh=\skip53
+\f@ncyO@elf=\skip54
+\f@ncyO@erf=\skip55
+\f@ncyO@olf=\skip56
+\f@ncyO@orf=\skip57
+)
+(./hw06.aux)
+\openout1 = `hw06.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+
+Overfull \hbox (5.39134pt too wide) in paragraph at lines 59--62
+[][]\OT1/cmtt/m/n/10.95 map3 \OT1/cmr/m/n/10.95 has type []\OT1/cmtt/m/n/10.95 
+('a -> 'b) * 'a list -> 'b list\OT1/cmr/m/n/10.95 , so the ex-pres-sion []\OT1/
+cmtt/m/n/10.95 (f x) :: map3 (f, L)
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 59--62
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 62--66
+
+ []
+
+
+Overfull \hbox (44.14159pt too wide) in paragraph at lines 62--66
+[]\OT1/cmtt/m/n/10.95 map \OT1/cmr/m/n/10.95 on []\OT1/cmtt/m/n/10.95 (fn x => 
+x ^ "!") ["Functions ", "are ", "Values"]\OT1/cmr/m/n/10.95 , which eval-u-ates
+ to a []\OT1/cmtt/m/n/10.95 string list
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 62--66
+
+ []
+
+
+Overfull \hbox (60.32596pt too wide) in paragraph at lines 62--66
+\OT1/cmr/m/n/10.95 typed. This is due to the in-put list's in-con-sis-tency of 
+el-e-ments; the func-tion []\OT1/cmtt/m/n/10.95 (fn (x,y) => (x-1, y ^ y))
+ []
+
+
+Overfull \hbox (30.06111pt too wide) in paragraph at lines 62--66
+\OT1/cmr/m/n/10.95 ond item in the in-put tu-ple, but the in-put list in the ex
+-pres-sion, []\OT1/cmtt/m/n/10.95 [(1, "f"), ("o", 2), ("o", 3)]\OT1/cmr/m/n/10
+.95 ,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 62--66
+
+ []
+
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+ Make it at least 13.59999pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[1
+
+{/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Try loading font information for U+msa on input line 76.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 76.
+
+(/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+Underfull \hbox (badness 10000) in paragraph at lines 76--97
+
+ []
+
+
+Overfull \hbox (4.88312pt too wide) in paragraph at lines 76--97
+\OT1/cmr/bx/n/10.95 Base Case $\OML/cmm/m/it/10.95 n \OT1/cmr/m/n/10.95 = 0$\OT
+1/cmr/bx/n/10.95 : []\OT1/cmtt/m/n/10.95 length L = 0 $\OMS/cmsy/m/n/10.95 ) \O
+ML/cmm/m/it/10.95 P\OT1/cmr/m/n/10.95 (0) :$ []\OT1/cmtt/m/n/10.95 foldr f z ([
+] @ [y]) = foldr f (f(y,z)) L\OT1/cmr/m/n/10.95 .
+ []
+
+
+Overfull \hbox (12.05093pt too wide) in paragraph at lines 76--97
+[]\OT1/cmtt/m/n/10.95 foldr f z ([] @ [y]) => foldr f z [y] = foldr f z (x::[y]
+) = f(y, foldr f z []) 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 76--97
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 76--97
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 76--97
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 76--97
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 76--97
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--127
+
+ []
+
+
+Overfull \hbox (48.15968pt too wide) in paragraph at lines 107--127
+\OMS/cmsy/m/n/10.95 ) \OML/cmm/m/it/10.95 P\OT1/cmr/m/n/10.95 (0) :$ []\OT1/cmt
+t/m/n/10.95 flattenleft [] = foldl g [] [] => [] \OT1/cmr/m/n/10.95 and []\OT1/
+cmtt/m/n/10.95 flattenright [] = foldr g [] [] => []\OT1/cmr/m/n/10.95 .
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 107--127
+
+ []
+
+
+Overfull \hbox (13.96753pt too wide) in paragraph at lines 107--127
+\OT1/cmr/m/n/10.95 Then, []\OT1/cmtt/m/n/10.95 foldl g z (x::(R@[y])) = foldl g
+ (g(x,z)) (R@[y]) => foldl g (z@x) (R@[y])
+ []
+
+
+Package Fancyhdr Warning: \headheight is too small (13.59999pt): 
+ Make it at least 25.2842pt.
+ We now make it that large for the rest of the document.
+ This may cause the page layout to be inconsistent, however.
+
+[2]
+Overfull \hbox (14.5774pt too wide) in paragraph at lines 142--143
+[]\OT1/cmr/m/n/10.95 Prove or dis-prove: (THM 1): For all types []\OT1/cmtt/m/n
+/10.95 t1, t2 \OT1/cmr/m/n/10.95 and val-ues []\OT1/cmtt/m/n/10.95 f : t1 -> bo
+ol\OT1/cmr/m/n/10.95 , []\OT1/cmtt/m/n/10.95 g : t2 -> bool\OT1/cmr/m/n/10.95 ,
+
+ []
+
+[3] [4] (./hw06.aux) ) 
+Here is how much of TeX's memory you used:
+ 1317 strings out of 493089
+ 14754 string characters out of 6134842
+ 74670 words of memory out of 5000000
+ 4834 multiletter control sequences out of 15000+600000
+ 9408 words of font info for 36 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 27i,10n,43p,654b,347s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmbx10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmmi10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmmi8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmr10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmr12.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmr8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/c
+msy10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+sy8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmti
+10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt1
+0.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/symbols/m
+sam10.pfb>
+Output written on hw06.pdf (4 pages, 128098 bytes).
+PDF statistics:
+ 61 PDF objects out of 1000 (max. 8388607)
+ 43 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

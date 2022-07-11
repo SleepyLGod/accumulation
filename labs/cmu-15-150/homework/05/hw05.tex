@@ -1,0 +1,170 @@
+% hw05.tex 
+% Created by Jack Kasbeer (jkasbeer) on October 3, 2015
+%
+% Principles of Functional Programming
+% 15-150
+% Assignment 05
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+
+\oddsidemargin0cm
+\topmargin-2cm     
+\textwidth16.5cm   
+\textheight23.5cm  
+
+\newcommand{\question}[2] {\vspace{.25in} \hrule\vspace{0.5em}
+\noindent{\bf #1: #2} \vspace{0.5em}
+\hrule \vspace{.10in}}
+\renewcommand{\part}[1] {\vspace{.10in} {\bf (#1)}}
+
+\newcommand{\myname}{Jack Kasbeer}
+\newcommand{\myandrew}{jkasbeer@andrew.cmu.edu}
+\newcommand{\myhwnum}{05}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+ 
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{\textbf{HW\myhwnum}}}     
+\rhead{\fancyplain{}{\myname\\ \myandrew}}
+\chead{\fancyplain{}{15-150}}
+
+\begin{document}
+
+\medskip            
+\thispagestyle{plain}
+\begin{center} 
+{\Large 15-150 Assignment \myhwnum} \\
+\myname \\
+\myandrew \\
+Section K \\
+October 6, 2015 \\
+\end{center}
+
+% ##### TASK 2 ##### %
+\question{2}{Types and Polymorphism}
+\begin{enumerate}
+% Task 2.1 
+\item \verb|Woof : 'a list * 'a -> 'a list|
+% Task 2.2 
+\item \verb|x : ('a -> 'b) -> 'a -> 'b|
+% Task 2.3 
+\item \verb|x : (int -> 'a) -> int -> 'a|
+\end{enumerate}
+
+% ##### TASK 4 ##### %
+\question{4}{Integration and Differentiation}
+\begin{enumerate}
+% Task 4.1
+\item \verb|differentiate| is defined in \verb|hw05.sml|
+% Task 4.2
+\item \verb|integrate| is defined in \verb|hw05.sml|
+\end{enumerate}
+
+% ##### TASK 5 ##### %
+\question{5}{Specifications and Proofs}
+\begin{enumerate}
+% Task 5.1
+\item Prove \verb|merge2| satisfies its specification.
+\begin{proof}
+Let $P(m)$ be the proposition that \verb|merge2| satisfies its specification for all \verb|int list list| with \verb|length = m|.\\
+\textbf{Base Case 0:} $P(0) \Rightarrow$ \verb|[]|, is true as it trivially satisfies the specification.\\
+\textbf{Base Case 1:} $P(1) \Rightarrow$ \verb|length L = 1| for some \verb|L : int list list|, which also trivially satisfies the specification.\\
+\textbf{Inductive Hypothesis:}\\
+ Assume $P(k)$ holds for all integer values between $1$ and $k-1$.\\
+WWTS: $P(k)$ holds for all $k \geq 0$\\
+\textbf{Inductive Step:} \\
+Consider \verb|merge2 L|, for some \verb|L : int list list| such that \verb|(length L = n) > 1|.\\
+Notice that \verb|merge2 L = merge2(L1::L2::R) = merge(L1,L2) :: merge2 R| satisfies the specification for \verb|merge2| because: \textbf{(1)} \verb|merge(L1,L2) =>*| is a sorted permutation of \verb|L1@L2| (by \verb|merge| spec.) and has \verb|length = length L1 + length L2| (Lemma 1).  \textbf{(2)} \verb|merge2 R| gives a 2$k$-uniform list of sorted lists consisting of integers from $R$ since \verb|length R < n|, so our Inductive Hypothesis applies to it.  \textbf{(3)} Hence, \verb|merge(L1,L2)::merge2(R) =>*| a 2$k$-uniform list of sorted lists consisting of the integers from \verb|L|, and we're done.\\\\
+$\therefore$ By SPMI, $P(m)$ holds for all \verb|L : int list list| with \verb|m = length L| $\geq 0$.
+\end{proof}
+% Task 5.2
+\item Prove \verb|merge_all| satisfies its specification.
+\begin{proof}
+Let $P(m)$ be the proposition that \verb|merge_all| satisfies its specification for all \verb|int list list| with \verb|length = m|.\\
+\textbf{Base Case 0:} $P(0) \Rightarrow$ \verb|[]| (by spec. for \verb|merge_all|), is true as \verb|length [] = 0| trivially satisfies the specification.\\
+\textbf{Base Case 1:} $P(1) \Rightarrow$ \verb|length L = 1| for some \verb|L : int list list|.  From the function definition, we can see that this would result in a singleton being returned, which is trivially true.\\
+\textbf{Inductive Hypothesis:} \\
+Assume $P(k)$ holds for all integer values between $1$ and $k-1$.\\
+WWTS $P(k)$ holds for all $k \geq 0$.\\
+\textbf{Inductive Step:} \\
+Consider \verb|merge_all L|, for some \verb|L : int list list|, such that \verb|n = length L > 1|.\\
+Notice that this evaluates to \verb|merge_all (merge2 L)| (by the function definition). \\
+\textbf{Case: n is odd...} By Lemma 2, \verb|length merge2(L) = n/2 + 1| and by Lemma 3, $m/2 + 1 < m$.  By our Induction Hypothesis, \verb|merge2 L| satisfies the specification for \verb|merge_all|.\\
+\textbf{Case: n is even...} By Lemma 2, \verb|length merge2(L) = n/2|.  By our Induction Hypothesis, \verb|merge2 L| satisfies the specification for \verb|merge_all|.\\\\
+$\therefore$ By SPMI, $P(m)$ holds for all \verb|L : int list list| with \verb|m = length L| $\geq 0$.
+\end{proof}
+% Task 5.3
+\item Yes, \verb|sort| is a correct sorting function for integer lists.  From its definition, we can see that \verb|merge_all| is being called on the list of singletons in \verb|L|, which are trivially $k$-uniform (and also by definition).  Since we have proven \verb|merge_all Ls| evaluates to a sorted list consisting of the integers from \verb|Ls|, given that \verb|Ls| is a $k$-uniform list of sorted lists, it follows that \verb|sort| is indeed a correct sorting function for integer lists.
+\end{enumerate}
+
+% ##### TASK 6 ##### %
+\question{6}{Trees}
+\begin{enumerate}
+% Task 6.1
+\item \verb|leaves| is implemented in \verb|hw05.sml|
+% Task 6.2
+\item \verb|interior| is implemented in \verb|hw05.sml|
+% Task 6.3
+\item \verb|is_full| is implemented in \verb|hw05.sml|
+% Task 6.4
+\item $W_{\verb|is_full|}$ and $S_{\verb|is_full|}$ for balanced tree of depth $d \geq 0$\\
+$W_{\verb|is_full|}(0) = c_0$\\
+$W_{\verb|is_full|}(d) = c_0 + c_1 + W_{\verb|is_full|}(d-1) + W_{\verb|is_full|}(d-1)$\\
+$\Rightarrow W_{\verb|is_full|}(d) = c_2 +2* W_{\verb|is_full|}(d-1)$\\
+$\Rightarrow W_{\verb|is_full|}(d)$ is $O(2^d)$\\\\
+$S_{\verb|is_full|}(0) = c_0$\\
+$S_{\verb|is_full|}(d) = c_0 + c_1 + S_{\verb|is_full|}(d-1)$\\
+$\Rightarrow S_{\verb|is_full|}(d) = c_2 + S_{\verb|is_full|}(d-1)$\\
+$\Rightarrow S_{\verb|is_full|}(d)$ is $O(d)$\\
+\end{enumerate}
+
+% ##### TASK 7 ##### %
+\question{7}{Higher-Order Functions}
+\begin{enumerate}
+% Task 7.1
+\item \verb|rotate| is implemented in \verb|hw05.sml|
+\end{enumerate}
+
+% ##### TASK 8 ##### %
+\question{8}{Blocks World}
+\begin{enumerate}
+% Task 8.1
+\item \verb|mk_tower_state| is implemented in \verb|hw05.sml|
+% Task 8.2
+\item \verb|mk_state| is implemented in \verb|hw05.sml|
+% Task 8.3
+\item \verb|delete_all| is implemented in \verb|hw05.sml|
+% Task 8.4
+\item \verb|is_ok| is implemented in \verb|hw05.sml|
+% Task 8.5
+\item \verb|move| is implemented in \verb|hw05.sml|
+% Task 8.6
+\item \verb|run| is implemented in \verb|hw05.sml|
+% Task 8.2
+\item \verb|towers| is implemented in \verb|hw05.sml|
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

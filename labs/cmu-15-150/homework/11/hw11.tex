@@ -1,0 +1,173 @@
+% hw11.tex 
+% Created by Jack Kasbeer (jkasbeer) on November 30, 2015
+%
+% Principles of Functional Programming
+% 15-150
+% Assignment 11
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+
+\oddsidemargin0cm
+\topmargin-2cm     
+\textwidth16.5cm   
+\textheight23.5cm  
+
+\newcommand{\question}[2] {\vspace{.25in} \hrule\vspace{0.5em}
+\noindent{\bf #1: #2} \vspace{0.5em}
+\hrule \vspace{.10in}}
+\renewcommand{\part}[1] {\vspace{.10in} {\bf (#1)}}
+
+\newcommand{\myname}{Jack Kasbeer}
+\newcommand{\myandrew}{jkasbeer@andrew.cmu.edu}
+\newcommand{\myhwnum}{10}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+ 
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{\textbf{HW\myhwnum}}}     
+\rhead{\fancyplain{}{\myname\\ \myandrew}}
+\chead{\fancyplain{}{15-150}}
+
+\begin{document}
+
+\medskip            
+\thispagestyle{plain}
+\begin{center} 
+{\Large 15-150 Assignment \myhwnum} \\
+\myname \\
+\myandrew \\
+Section K \\
+November 31, 2015 \\
+\end{center}
+
+% ##### TASK 2 ##### %
+\question{2}{Better Sequences}
+\begin{enumerate}
+% Task 2.1 
+\item \verb|update| is implemented in \verb|betterseq.sml|.
+% Task 2.2 
+\item \verb|mapIdx| is implemented in \verb|betterseq.sml|.
+% Task 2.3
+\item \verb|extractSomes| is implemented in \verb|shrubseq.sml|.
+\end{enumerate}
+
+% ##### TASK 6 ##### %
+\question{6}{Implementing the Game}
+\begin{enumerate}
+% Task 6.1
+\item \verb|apply_effect| is implemented in \verb|pokemon.sml|.
+% Task 6.2
+\item \verb|apply_damage| is implemented in \verb|pokemon.sml|.
+% Task 6.3
+\item \verb|apply_attack| is implemented in \verb|pokemon.sml|.
+% Task 6.4
+\item \verb|reset_stats| is implemented in \verb|pokemon.sml|.
+% Task 6.5
+\item \verb|make_move| is implemented in \verb|pokemon.sml|.
+% Task 6.6
+\item \verb|available_pokemon| is implemented in \verb|pokemon.sml|.
+% Task 6.7
+\item \verb|moves| is implemented in \verb|pokemon.sml|.
+% Task 6.8
+\item \verb|status| is implemented in \verb|pokemon.sml|.
+\end{enumerate}
+
+\newpage
+
+% ##### TASK 7 ##### %
+\question{7}{Sequence Thingies}
+\begin{enumerate}
+% Task 7.1
+\item The value of \verb|reduce (op +) 5 s =| $5*2^n$ when the value of \verb|s| is the all-zero integer sequence $\langle0,0,...,0\rangle$ of length $2^n$.
+\begin{proof}By strong induction on \verb|n|.\\
+Let the proposition stated above be denoted by $P(n)$.  We will show that $\forall n \geq 0.\, P(n)$ holds.
+
+\textbf{Base case: n = 0} $\Rightarrow$ \verb|length s = | $2^0 = 1$. Considering $P(0)$...\\ With $n = 0$, we have $s = \langle 0 \rangle \Rightarrow$\\
+ \verb|reduce (op +) 5 s => reduce (op +) 5 <0>| \verb| => (op +) (nth 0 <0>, 5)|, by inspection of \verb|reduce|.  The operation \verb|op +| is defined to be a total function, so we may say that the above evaluates to: \verb|0 + 5 => 5 x| $2^0$ (0th position of \verb|s| is $0$).  Hence, $P(0)$ holds.
+
+\textbf{IH:} Assume $P(k)$ holds $\forall k$ such that $1 \leq k \leq n$.  Also, for convenience, let \verb|++| denote \verb|(op +)|.
+
+\textbf{IS:} WWTS that $P(n)$ holds, so consider $P(k+1)$...\\
+\verb|reduce ++ 5 s => ++ (reduce ++ 5 s1, reduce ++ 5 s2)|, by inspection of \verb|reduce|.\\
+Note that the length of \verb|s| is $2^{k+1}$, which means that the call to \verb|split| implies that \verb|s1,s2| are of length $2^k$.  Therefore, 
+\verb|(++)(reduce ++ 5 s1, reduce ++ 5 s2) => (++)(5 x| $2^k$, \verb|5 x| $2^k$\verb|)|, by our IH.  Evaluating further by use of the aforementioned totality of \verb|(op +)|, we have: \verb|5 x | $2^k$ \verb|+ 5 x| $2^k$ \verb|=> 5 x| $2^{k+1}$, and we're done.
+
+Hence, by the Strong Principle of Mathematical Induction, we may conclude that $\forall n \geq 0.\, P(n)$ holds.
+\end{proof}
+% Task 7.2
+\item Work and span of \verb|reduce g z s|, when \verb|g| is a constant-time function value, \verb|z| is a value, and \verb|s| is a sequence value of length $2^n$.
+
+$W(0) = c_0$\\
+$W(1) = c_1$ (\verb|g| is constant-time)\\
+$W(n) = c_0 + c_1 + 2*W(n-1)$\\
+$\Rightarrow W(n) = c_2 + 2*W(n-1)$\\
+$\Rightarrow W(n)$ is O($2^n$)
+
+$S(0) = k_0$\\
+$S(1) = k_1$ (\verb|g| is constant-time)\\
+$S(n) = k_0 + k_1 + 2*W(n-1)$\\
+$\Rightarrow S(n) = k_2 + S(n-1)$\\
+$\Rightarrow S(n)$ is O($n$)
+% Task 7.3
+\item \textbf{Prove} by induction on the length of \verb|s| that:
+\begin{center}\verb|mapreduce f g z s = reduce g z (map f s)|\end{center}
+\begin{proof} By strong induction on length of \verb|s|.\\
+Let the above proposition be denoted by $P(n)$, where $n$ is the length of \verb|s|.  We will show $\forall n \geq 0.\, P(n)$.
+
+\textbf{Base case: n = 0}  $\Rightarrow$ length \verb|s = 0|.  Considering $P(0)$...\\
+LHS:   \verb|mapreduce f g z s => z|, by the definition of \verb|mapreduce|.\\
+RHS:   \verb|reduce g z (map f s) => reduce g z s|, by definition of \verb|map|, and \verb|reduce g z s => z|, by definition of \verb|reduce|.  Hence, \verb|mapreduce f g z s = reduce g z (map f s) = z|, and thus $P(0)$ holds.
+
+\textbf{Inductive Step:}  Let $k$ be an arbitrary integer; assume $P(k)$ holds $\forall k$ such that$1 \leq k \leq n-1$, and assume.  WWTS $P(k+1)$ is also true.  Considering $P(k+1)$...\\
+LHS:  \verb|mapreduce f g z s \Rightarrow g(mapreduce f g z s1, mapreduce f g z s2)|, by observation of the wildcard case ($k \geq 1 => k+1 \geq 2$, and hence the length is not $0$ or $1$).
+
+By the definition of \verb|split|, \verb|val (s1,s2) = split s|, where the lengths of \verb|s1| and \verb|s2| $\leq n$, which means that the induction hypothesis applies ($k \leq n-1$).  Then notice, by our IH, \verb|g(mapreduce f g z s1, mapreduce f g z s2) =>|\\
+\verb|g(reduce g z (map f s1), reduce g z (map f s2))|.
+
+RHS:  Let \verb|split s = (s1,s2)|, and notice that \verb|map f s = join(map f s1, map f s2)|, since \verb|map| is a total function.  Using this, we have:\\
+\verb|reduce g z (map f s) => reduce g z join(map f s1, map f s2)|.\\
+Finally, by the definition of \verb|reduce|, this then evaluates to\\
+\verb|g(reduce g z (map f s1), reduce g z (map f s2))|.  Hence, the LHS = RHS, and thus $P(k+1)$ holds.
+
+By the Strong Principle of Mathematical Induction, we may conclude that $\forall n \geq 0.\, P(n)$ holds.
+\end{proof}
+\end{enumerate}
+
+% ##### TASK 8 ##### %
+\question{8}{Alphabeta Pruning}
+\begin{enumerate}
+% Task 8.1
+\item \verb|F2|, \verb|G2|, and \verb|next_move| are defined in \verb|alphabeta.sml|.
+\end{enumerate}
+
+% ##### TASK 9 ##### %
+\question{9}{Jamboree}
+\begin{enumerate}
+% Task 9.1
+\item \verb|splitMoves|, \verb|Fjam|, \verb|GJam|, and \verb|next_move| are defined in \verb|jamboree.sml|.
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

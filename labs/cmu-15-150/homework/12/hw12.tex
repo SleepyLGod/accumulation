@@ -1,0 +1,123 @@
+% hw12.tex 
+% Created by Jack Kasbeer (jkasbeer) on December 7, 2015
+%
+% Principles of Functional Programming
+% 15-150
+% Assignment 12
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+
+\oddsidemargin0cm
+\topmargin-2cm     
+\textwidth16.5cm   
+\textheight23.5cm  
+
+\newcommand{\question}[2] {\vspace{.25in} \hrule\vspace{0.5em}
+\noindent{\bf #1: #2} \vspace{0.5em}
+\hrule \vspace{.10in}}
+\renewcommand{\part}[1] {\vspace{.10in} {\bf (#1)}}
+
+\newcommand{\myname}{Jack Kasbeer}
+\newcommand{\myandrew}{jkasbeer@andrew.cmu.edu}
+\newcommand{\myhwnum}{12}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+ 
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{\textbf{HW\myhwnum}}}     
+\rhead{\fancyplain{}{\myname\\ \myandrew}}
+\chead{\fancyplain{}{15-150}}
+
+\begin{document}
+
+\medskip            
+\thispagestyle{plain}
+\begin{center} 
+{\Large 15-150 Assignment \myhwnum} \\
+\myname \\
+\myandrew \\
+Section K \\
+December 8, 2015 \\
+\end{center}
+
+% ##### QUESTION 4 ##### %
+\question{4.2}{RegExTest with Strings}
+Results:\\
+*******************************\\
+Tests for Regular:\\
+Test R0: ['', a, aa, aaa, aaaa, aaaaa, aaaaaa, aaaaaaa, aaaaaaaa, aaaaaaaaa]\\
+Test R1: ['', a, b, aa, ab, bb, aaa, aab, abb, bbb]\\
+Test R2: ['', a, b, aa, bb, aaa, bbb, aaaa, bbbb, aaaaa]\\
+Test R3: ['', '', '', '', '', '', '', '', '', '']\\
+Test R4: ['', a, b, aa, ab, ba, bb, aaa, aab, aba]\\
+Test R5: ['', ab, abab, ababab, abababab, ababababab, abababababab, ababababababab, abababababababab, ababababababababab]\\
+Test R6: ['']\\
+Test R7: ['', '', '', '', '', '', '', '', '', '']\\
+Test R8: ['', '', '', '', '', '', '', '', '', '']\\
+Test R9: ['', ab, abab, ababab, abababab, ababababab, abababababab, ababababababab, abababababababab, ababababababababab]\\
+Test R10: [abc]\\
+Test R11: [abc]\\
+Test R12: [a, b, c]\\
+Test R13: [a, b, c]\\
+Test R14: [aaa]\\
+Test R15: [aaa]\\
+Test R16: [a]\\
+Test R17: [a]\\
+
+\newpage
+
+\question{4.3}{RegExTest with Strings2}
+Results:\\
+*******************************\\
+Tests for Regular2:\\
+Test R0: ['', a, aa, aaa, aaaa, aaaaa, aaaaaa, aaaaaaa, aaaaaaaa, aaaaaaaaa]\\
+Test R1: ['', a, aa, aaa, aaaa, aaaaa, aaaaaa, aaaaaaa, aaaaaaaa, aaaaaaaaa]\\
+Test R2: ['', a, aa, aaa, aaaa, aaaaa, aaaaaa, aaaaaaa, aaaaaaaa, aaaaaaaaa]\\
+Test R3: ['', '', '', '', '', '', '', '', '', '']\\
+Test R4: ['', a, aa, aaa, aaaa, aaaaa, aaaaaa, aaaaaaa, aaaaaaaa, aaaaaaaaa]\\
+Test R5: ['', ab, abab, ababab, abababab, ababababab, abababababab, ababababababab, abababababababab, ababababababababab]\\
+Test R6: ['']\\
+Test R7: ['', '', '', '', '', '', '', '', '', '']\\
+Test R8: ['', '', '', '', '', '', '', '', '', '']\\
+Test R9: ['', ab, abab, ababab, abababab, ababababab, abababababab, ababababababab, abababababababab, ababababababababab]\\
+Test R10: [abc]\\
+Test R11: [abc]\\
+Test R12: [a, b, c]\\
+Test R13: [a, b, c]\\
+Test R14: [aaa]\\
+Test R15: [aaa]\\
+Test R16: [a]\\
+Test R17: [a]\\
+
+The results differ because in \verb|Strings|, the comparison function cases on the length of each element before comparing their dictionary order.  In contrast, \verb|Strings2| uses the typical \verb|String.compare| and nothing else to compare the elements.  In the case of \verb|Test R2|, this causes "b" to come before "aa" in \verb|Regular|, even though "aa" has a dictionary value smaller than "b" (which is why strings of a's of increasing length are the first ten elements in \verb|Regular2| for \verb|Test R2|).   The effects of this difference can be seen specifically in \verb|Test R1|, \verb|Test R2|, and \verb|Test R4| (only a few examples).
+
+% ##### QUESTION 5 ##### %
+\question{5.2}{MemoKnuth results}
+\verb|structure S = Memo_Knuth(Table)(SimpleNim)|
+
+\verb|S.player 100 = 3|
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

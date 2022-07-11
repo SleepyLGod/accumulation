@@ -1,0 +1,115 @@
+% hw10.tex 
+% Created by Jack Kasbeer (jkasbeer) on November 27, 2015
+%
+% Principles of Functional Programming
+% 15-150
+% Assignment 10
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+
+\oddsidemargin0cm
+\topmargin-2cm     
+\textwidth16.5cm   
+\textheight23.5cm  
+
+\newcommand{\question}[2] {\vspace{.25in} \hrule\vspace{0.5em}
+\noindent{\bf #1: #2} \vspace{0.5em}
+\hrule \vspace{.10in}}
+\renewcommand{\part}[1] {\vspace{.10in} {\bf (#1)}}
+
+\newcommand{\myname}{Jack Kasbeer}
+\newcommand{\myandrew}{jkasbeer@andrew.cmu.edu}
+\newcommand{\myhwnum}{10}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+ 
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{\textbf{HW\myhwnum}}}     
+\rhead{\fancyplain{}{\myname\\ \myandrew}}
+\chead{\fancyplain{}{15-150}}
+
+\begin{document}
+
+\medskip            
+\thispagestyle{plain}
+\begin{center} 
+{\Large 15-150 Assignment \myhwnum} \\
+\myname \\
+\myandrew \\
+Section K \\
+November 17, 2015 \\
+\end{center}
+
+% ##### TASK 2 ##### %
+\question{2}{Tree Sequences}
+\begin{enumerate}
+% Task 2.1 
+\item $W_{length}(n) = c_0 + c_1 + 2*W_{length}(n div 2)$\\
+$\Rightarrow W_{length}(n) = O(n)$\\
+$S_{length}(n) = c_0 + c_1 + 2*W_{length}(n\,div\,2)$\\
+$\Rightarrow S_{length}(n) = c_2 + W_{length}(n\,div\,2)$ (parallelism)\\
+$\Rightarrow S_{length}(n) = O(log\,n)$
+% Task 2.2 
+\item \verb|nth| is implemented in \verb|shrubseq.sml|.
+% Task 2.3
+\item \verb|tabulate| is implemented in \verb|shrubseq.sml|.
+% Task 2.4
+\item \verb|length| is implemented in \verb|sizeseq.sml|.
+% Task 2.5
+\item \verb|nth| is re-implemented in \verb|sizeseq.sml|.
+% Task 2.6
+\item \verb|tabulate| is implemented in \verb|sizeseq.sml|.
+% Task 2.7
+\item The work and span for both of these implementations for \verb|tabulate| is the same.  The difference between them is the cost trade-off; in \verb|sizeseq.sml|, the \verb|tabulate| function uses more memory because of the extra mode.  The \verb|length| function differs in the sense that it's not recursive in \verb|shrubseq.sml|, and as a result its work is $O(n)$ in \verb|shrub|, but $O(1)$ in \verb|size|.  The span is the same for both due to parallelism.
+\end{enumerate}
+
+% ##### TASK 3 ##### %
+\question{3}{Just a Monoid in the Category of Endofunctors}
+\begin{enumerate}
+% Task 3.1 
+\item \verb|id = (fn x => SOME x)|
+% Task 3.2 
+\item \verb|(fn 0 => NONE| $|$ \verb|x => SOME ((3 mod x) + 1)|
+% Task 3.3 
+\item \verb|findN| is implemented in \verb|findMany.sml|
+\end{enumerate}
+
+% ##### TASK 4 ##### %
+\question{4}{Barnes-Hut}
+\begin{enumerate}
+% Task 4.1
+\item \verb|barycenter| is implemented in \verb|barnes-hut.sml|
+% Task 4.2
+\item \verb|quadrantize| is implemented in \verb|barnes-hut.sml|
+% Task 4.3
+\item \verb|compute_tree| is implemented in \verb|barnes-hut.sml|
+% Task 4.4
+\item \verb|groupable| is implemented in \verb|barnes-hut.sml|
+% Task 4.5
+\item \verb|bh_acceleration| is implemented in \verb|barnes-hut.sml|
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

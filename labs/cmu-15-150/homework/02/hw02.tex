@@ -1,0 +1,202 @@
+% hw02.tex 
+% Created by Jack Kasbeer (jkasbeer) on September 13, 2015
+%
+% Principles of Functional Programming
+% 15-150
+% Assignment 01
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{fancyhdr}
+
+\oddsidemargin0cm
+\topmargin-2cm 
+\textwidth16.5cm 
+\textheight23.5cm  
+
+\newcommand{\question}[2] {\vspace{.25in} \hrule\vspace{0.5em}
+\noindent{\bf #1: #2} \vspace{0.5em}
+\hrule \vspace{.10in}}
+\renewcommand{\part}[1] {\vspace{.10in} {\bf (#1)}}
+
+\newcommand{\myname}{Jack Kasbeer}
+\newcommand{\myandrew}{jkasbeer@andrew.cmu.edu}
+\newcommand{\myhwnum}{02}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+ 
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{\textbf{HW\myhwnum}}}
+\rhead{\fancyplain{}{\myname\\ \myandrew}}
+\chead{\fancyplain{}{15-150}}
+
+\begin{document}
+
+\medskip        
+
+\thispagestyle{plain}
+\begin{center}  
+{\Large 15-150 Assignment \myhwnum} \\
+\myname \\
+\myandrew \\
+Section M \\
+September 15, 2015 \\
+\end{center}
+
+% ##### TASK 2 ##### %
+\question{2}{Basics}
+% begin task 2 %
+\begin{enumerate}
+% begin 2.1 %
+\item \verb|fun pow : (int, int) -> int|,\\ 
+    \verb|fun cube : real -> real|,\\ 
+    \verb|fun bop1 : real -> int|,\\ 
+    \verb|fun bop2 : real -> real|,\\
+    \verb|fun bop3| is not well-typed; \verb|trunc z| will return an \verb|int|, but \verb|cube| expects a \verb|real| as an argument.
+% begin 2.2 %
+\item \verb|pow(1, 21 + 21)| \\
+    \verb|=> (fn k,x => if k = 0 then 1 else x * pow (k-1, x) (1, 21 + 21))|\\
+    \verb|=> (fn k,x => if k = 0 then 1 else x * pow (k-1, x) (1, 42))|\\
+    \verb|=> if 1 = 0 then 1 else 42 * pow (1-1, 42)|\\
+    \verb|=> if false then 1 else 42 * pow(1-1, 42)|\\
+    \verb|=> 42 * pow(1-1, 42)|\\
+    \verb|=> 42 * pow(0, 42)|\\
+    % Recursive function call evaluation %
+    \verb|=> 42 * (fn k,x => if k = 0 then 1 else x * pow (k-1, x) (0, 42))|\\
+    \verb|=> 42 * (fn k,x => if true then 1 else x * pow (k-1, x) (0, 42))|\\
+    \verb|=> 42 * 1|\\
+    \verb|=> 42|
+\end{enumerate}
+% end task 2 %
+
+% ##### TASK 3 ##### %
+\question{3}{Recursive Functions}
+% begin task 3 %
+\begin{enumerate}
+% begin 3.1 %
+\item \verb|fact(3)| $=_{int}$ \verb|6|\\
+\begin{math}
+    \begin{aligned}
+        fact(3) &=_{int} 3 * fact(3-1) \\
+        &=_{int} 3 * fact(2),  \text{by referential transparency}\\
+        &=_{int} 3 * 2 * fact(1),  \text{by (b)}\\
+        &=_{int} 3 * 2 * 1 * fact(0),  \text{by (a)}\\
+        &=_{int} 3 * 2 * 1 * 1,  \text{by (1)}\\
+        &=_{int} 6,  \text{trivially}\\
+        \text{Hence, } &fact(3) =_{int} 6\\
+    \end{aligned}
+\end{math}
+% begin 3.2 %
+\item \verb|fact(~1)| $!=_{int}$ \verb|fact(~2)|\\
+Both of these expressions fail to terminate since the function \verb|fact| doesn't account for negative arguments.  They will execute in an infinite recursive loop and never terminate since the argument \verb|n| will never be equal to \verb|0|.
+% begin 3.3 %
+\item Task 3.3 is in \verb|hw02.sml|
+\end{enumerate}
+% end task 3 %
+
+% ##### TASK 4 ##### %
+\question{4}{Gregorian Functional Programming}
+% begin task 4 %
+\begin{enumerate}
+% begin 4.1 %
+\item What is its type?\\
+    \part{i} \verb|gauss1 : (int, int, int) -> int|\\
+    \part{ii} \verb|gauss1(2,2,2015) : int|\\
+    \part{iii} \verb|gauss1(1+1, 3-1, 5*403) : int|\\
+    \part{iv} \verb|gauss1(1.0, 2.0, 2015.0)| is not well-typed because \verb|gauss1| expects three arguments of type \verb|int| and this expression passes in arguments of type \verb|real|.
+% begin 4.2 %
+\item What are their values?\\
+\part{i} \verb|val gauss1 = fn (D:int, M:int, Y:int) : int =|\\ 
+    \verb|let|\\
+    \verb|val m = if M>2 then M-2 else M+10|\\
+    \verb|val y = if M>2 then Y else Y-1|\\
+    \verb|val c = y div 100|\\
+    \verb|val a = y mod 100|\\
+    \verb|val b = (13 * m - 1) div 5 + (a div 4) + (c div 4)|\\
+    \verb|in|\\
+    \verb|(a + b + D - 2 * c) mod 7|\\
+    \verb|end;|\\
+\part{ii} \verb|val gauss1(2,2,2015) =|\\
+    \verb|(fn (D:int, M:int, Y:int) : int =|\\ 
+    \verb|let|\\
+    \verb|val m = if M>2 then M-2 else M+10|\\
+    \verb|val y = if M>2 then Y else Y-1|\\
+    \verb|val c = y div 100|\\
+    \verb|val a = y mod 100|\\
+    \verb|val b = (13 * m - 1) div 5 + (a div 4) + (c div 4)|\\
+    \verb|in|\\
+    \verb|(a + b + D - 2 * c) mod 7|\\
+    \verb|end)(2,2,2015)|\\
+\part{iii} \verb|val gauss1(2,2,2015) =|\\
+    \verb|(fn (D:int, M:int, Y:int) : int =|\\ 
+    \verb|let|\\
+    \verb|val m = if M>2 then M-2 else M+10|\\
+    \verb|val y = if M>2 then Y else Y-1|\\
+    \verb|val c = y div 100|\\
+    \verb|val a = y mod 100|\\
+    \verb|val b = (13 * m - 1) div 5 + (a div 4) + (c div 4)|\\
+    \verb|in|\\
+    \verb|(a + b + D - 2 * c) mod 7|\\
+    \verb|end)(1+1, 3-1, 5*403)|\\
+\part{iv} \verb|val gauss1(1.0, 2.0, 2015.0)| does not exist
+% begin 4.3 %
+\item What are their syntactic values?\\
+\part{i} \verb|val gauss1 = fn (D:int, M:int, Y:int) : int =|\\ 
+    \verb|let|\\
+    \verb|val m = if M>2 then M-2 else M+10|\\
+    \verb|val y = if M>2 then Y else Y-1|\\
+    \verb|val c = y div 100|\\
+    \verb|val a = y mod 100|\\
+    \verb|val b = (13 * m - 1) div 5 + (a div 4) + (c div 4)|\\
+    \verb|in|\\
+    \verb|(a + b + D - 2 * c) mod 7|\\
+    \verb|end;|\\
+\part{ii} Syntactic value of \verb|gauss1(2,2,2015) = 1|\\
+\part{iii} Syntactic value of \verb|gauss1(1+1, 3-1, 5*403) = 1|\\
+\part{iv} Syntactic value of \verb|gauss1(1.0, 2.0, 2015.0)| does not exist
+% begin 4.4 %
+\item Task 4.4 is in \verb|hw02.sml|
+% begin 4.5 %
+\item Which of these statements are true/false?\\
+\part{i} \verb|gauss1| and \verb|gauss2| are extensionally equivalent.. FALSE.\\These functions handle the arguments differently and take different algorithmic approaches to determining the day of the week.  It is only for valid dates do they evaluate to the same value.  So if we enter an invalid date into \verb|gauss1| and the same invalid date into \verb|gauss2|, they will evaluate to different values; hence, they are not extensionally equivalent.\\
+\part{ii} \verb|gauss1 (d, m, y) = gauss2 (d, m, y)| for all integer values \verb|d, m, y|.. FALSE.  Same reasoning applies from above, but the main point is these functions compute the day of the week differently so negative integers will yield different answers for both functions.\\
+\part{iii} \verb|gauss1 (d, m, y) = gauss2 (d, m, y)| for all integer values \verb|d, m, y| such that \verb|is_valid_date (d, m, y) = true|.. TRUE. If the date is valid, both of these functions are correct implementations so they will yield the same answer.
+% begin 4.6 %
+\item Task 4.6 is in \verb|hw02.sml|
+\end{enumerate}
+
+% ##### TASK 5 ##### %
+\question{5}{Sums of Powers}
+% begin task 5 %
+\begin{enumerate}
+% begin 5.1 %
+\item Prove: $\forall n \geq 1.\, \sum_{k=1}^{n}k^4 = (6n^5 + 15n^4 + 10n^3 - n)/30$\\
+\begin{proof}
+Let $P(n)$ be "$\sum_{k=1}^{n}k^4 = (6n^5 + 15n^4 + 10n^3 - n)/30$".\\
+We will prove "$\forall n \geq 1. P(n)$" by induction on $n$.\\
+Base case: $P(1)$ holds since,
+\[ P(1) \Rightarrow \sum_{k=1}^{1}k^4 = 1^4 = 1 \]
+and 
+\[(6(1^5) + 15(1^4) + 10(1^3) - 1)/30\]
+\[= (6 + 15 + 10 - 1)/30\]
+\[= (31 - 1)/30\]
+\[= 30/30\]
+\[= 1\]
+Now, suppose $P(m)$ holds for some arbitrary $m$.  WWTS $P(m+1)$ holds in order to prove $P(n). \forall n \geq 1$.
+\[P(m+1) \Rightarrow \sum_{k=1}^{m+1}k^4 = (m+1)^4 + \sum_{k=1}^{m}k^4\]
+\[ = (m+1)^4 + (6m^5 + 15m^4 + 10m^3 - m)/30 \]
+\[ = (m^4 + 4m^3 + 6m^2 + 4m + 1) + (6m^5 + 15m^4 + 10m^3 - m)/30 \]
+\end{proof}
+% begin 5.2 %
+\item $k$ multiplication operations are performed in \verb|pow(k,n)|
+% begin 5.3 %
+\item $15$ multiplication operations are performed in \verb|check(n)|
+% begin 5.4 %
+\item Task 5.4 is in \verb|hw02.sml|
+\end{enumerate}
+
+\end{document}
+

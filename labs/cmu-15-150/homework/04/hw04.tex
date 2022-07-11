@@ -1,0 +1,177 @@
+% hw04.tex 
+% Created by Jack Kasbeer (jkasbeer) on September 28, 2015
+%
+% Principles of Functional Programming
+% 15-150
+% Assignment 04
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+
+\oddsidemargin0cm
+\topmargin-2cm     
+\textwidth16.5cm   
+\textheight23.5cm  
+
+\newcommand{\question}[2] {\vspace{.25in} \hrule\vspace{0.5em}
+\noindent{\bf #1: #2} \vspace{0.5em}
+\hrule \vspace{.10in}}
+\renewcommand{\part}[1] {\vspace{.10in} {\bf (#1)}}
+
+\newcommand{\myname}{Jack Kasbeer}
+\newcommand{\myandrew}{jkasbeer@andrew.cmu.edu}
+\newcommand{\myhwnum}{04}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+ 
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{\textbf{HW\myhwnum}}}     
+\rhead{\fancyplain{}{\myname\\ \myandrew}}
+\chead{\fancyplain{}{15-150}}
+
+\begin{document}
+
+\medskip            
+\thispagestyle{plain}
+\begin{center} 
+{\Large 15-150 Assignment \myhwnum} \\
+\myname \\
+\myandrew \\
+Section K \\
+September 29, 2015 \\
+\end{center}
+
+% ##### TASK 2 ##### %
+\question{2}{Parentheses Matching}
+\begin{enumerate}
+% Task 2.1 
+\item Prove: for all values \verb|A : paren list, n : int,| such that \verb|n >= 0| and \verb|B : paren list|, if \verb|A| is balanced, then 
+\begin{center} \verb|is_balanced(A @ B, n) = is_balanced(B, n)| \end{center}
+\begin{proof}
+By strong induction on $length$ of A.\\
+Let $P(n)$ be the proposition that \verb|is_balanced(A @ B, n) = is_balanced(B, n)| for all \verb|n >= 0| and balanced integer lists \verb|A|, where \verb|n = length A|.\\
+Base Case: \verb|length(A) = 0|.  It's trivially true that \verb|is_balanced(A @ B, 0) = is_balanced(B, 0)| since \verb|A@B = B|.\\
+Inductive Hypothesis: Assume $P(k)$ is true for all integer lists with $length \neq 1$.\\
+Considering $P(k+1)$...\\
+\verb|is_balanced(A @ B, k) = is_balanced((L::A' @ R::A'') @ B, k)|, by def. of balanced paren list.\\
+\verb|=> is_balanced(L::(A'@R::A''@B), k)|, by lemma 4\\
+\verb|=> is_balanced(A'@(R::A''@B), k+1)|, by proven spec of \verb|is_balanced|\\
+\verb|=> is_balanced(R::A''@B, k+1)|, by IH\\
+\verb|=> is_balanced(A''@B, k)|, by \verb|is_balanced|\\
+\verb|=> is_balanced(B, k)|, by IH\\
+It follows that for all values \verb|A : paren list, n : int,| such that \verb|n >= 0| and \verb|B : paren list|, if \verb|A| is balanced, then 
+\begin{center} \verb|is_balanced(A @ B, n) = is_balanced(B, n)| \end{center} 
+\end{proof}
+% Task 2.2 
+\item Show: If \verb|L : paren list| is a balanced list, then \verb|is_balanced(L, 0) = true| 
+\begin{proof}
+Let \verb|L | be a balanced list.  Then, for some balanced lists \verb|M1| and \verb|M2|, \verb|L = (Left::M1) @ (Right::M2)|, by def. of a balanced paren list.\\
+\verb|is_balanced(L, 0) = is_balanced((Left::M1) @ (Right::M2), 0)|, by Task 2.1\\
+\verb|=> is_balanced(Left::M1, 0) = is_balanced(M1, 0+1)|, but by def. M1 is balanced so this is \verb|true|\\
+and \verb|is_balanced(Right::M2, 1) = if n > 0 then is_balanced(M2, 0) else false|\\
+\verb|=> is_balanced(Right::M2, 1) = is_balanced(M2, 0)| and M2 is also defined to be balanced.\\
+Hence, if \verb|L : paren list| is a balanced list, then \verb|is_balanced(L, 0) = true|
+\end{proof}
+% Task 2.3 
+\item \verb|pmatch| is implemented in \verb|hw04.sml|
+\end{enumerate}
+
+% ##### TASK 3 ##### %
+\question{3}{Full Trees}
+\begin{enumerate}
+% Task 3.1 
+\item \verb|shape : tree * int -> tree|
+% Task 3.2 
+\item Work to evaluate \verb|shape(T, n)|\\
+$W_{shape}(Empty, n) = c_0$\\
+$W_{shape}(T^m, n) = c_1 + W_{shape(T-left, n+1)} + W_{shape(T-right, n+1)}$\\
+$W_{shape}(T^m, n) = c_1 + 2*W_{shape(T^{m-1}, n+1)}$\\
+$W_{shape}(T^m, n) = c_2 + 4*W_{shape(T^{m-2}, n+2)}$\\
+$W_{shape}(T^m, n) = O(2^m)$
+% Task 3.3 
+\item Span to evaluate \verb|shape(T,n)|\\
+$S_{shape}(Empty, n) = c_0$\\
+$S_{shape}(T^m, n) = c_1 + max(S_{shape(T^{m-1}, n+1)}, S_{shape(T^{m-1}, n+1)})$\\
+$S_{shape}(T^m, n) = c_1 + S_{shape(T^{m-1}, n+1)}$\\
+$S_{shape}(T^m, n) = O(m)$
+% Task 3.4
+\item \verb|census| is implemented in \verb|hw04.sml|
+\end{enumerate}
+
+% ##### TASK 4 ##### %
+\question{4}{Quicksorting a List}
+\begin{enumerate}
+% Task 4.1
+\item \verb|part| is implemented in \verb|hw04.sml|
+% Task 4.2
+\item Try to prove: For all integer lists, \verb|L|, \verb|quicksort L| evaluates to a \verb|<-|sorted permutation of \verb|L|.\\
+The problem in the previous implementation was that it was using the first element as a basis for the sort.  The proof breaks down when trying to prove that \verb|x| is in the right position in the final \verb|<-|sorted list.
+% Task 4.3
+\item Fixed definition of \verb|quicksort| is in \verb|hw04.sml|.
+\end{enumerate}
+
+% ##### TASK 5 ##### %
+\question{5}{Tree Traversal}
+\begin{enumerate}
+% Task 5.1
+\item \verb|traversal| is implemented in \verb|hw04.sml|.
+\end{enumerate}
+
+\newpage
+
+% ##### TASK 6 ##### %
+\question{6}{Tree Size}
+\begin{enumerate}
+% Task 6.1
+\item Prove: for all values \verb|t : tree|
+\begin{center}\verb|size(t) = length(treeToList t)|\end{center}
+\begin{proof}
+By structural induction on \verb|T|.\\
+Let $P(T)$ be the proposition that 
+\begin{center}\verb|size(T) = length(treeToList(T))|\end{center}
+Base Case: $P(Empty) \Rightarrow$ \verb|size(Empty) = 0 = length(treeToList(T)|, trivially.\\
+Inductive Hypothesis: Let $T = (L, x, R)$ and assume $P(L)$ and $P(R)$ are true for some tree with a non-negative depth.\\
+WWTS $P(T)$ is true for all integers $x \geq 0$.\\
+\verb|Node(L, x, R)) = size(L) + 1 size(R)|, by def. of \verb|size|\\
+\verb|= 1 + length(treeToList(L)) + length(treeToList(R))|, by IH\\
+\verb|= length(treeToList(L) + x::treeToList(R))|, by Lemma 2\\
+\verb|= length(treeToList(L) @ x::treeToList(R))|, by Lemma 2\\
+\verb|= length(treeToList(Node(L,x,R)))|, by def. of \verb|treeToList|\\
+Hence, by structural induction on \verb|T|,  for all values \verb|t : tree|, \verb|size(t) = length(treeToList t)|
+\end{proof}
+\end{enumerate}
+
+% ##### TASK 7 ##### %
+\question{7}{Heaps and Heaps of Heaps}
+\begin{enumerate}
+% Task 7.1
+\item \verb|insert| is implemented in \verb|hw04.sml|.
+% Task 7.2
+\item \verb|join| is implemented in \verb|hw04.sml|.
+% Task 7.3
+\item \verb|heapify| is implemented in \verb|hw04.sml|.
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

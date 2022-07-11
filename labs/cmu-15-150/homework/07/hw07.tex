@@ -1,0 +1,124 @@
+% hw07.tex 
+% Created by Jack Kasbeer (jkasbeer) on October 20, 2015
+%
+% Principles of Functional Programming
+% 15-150
+% Assignment 07
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+
+\oddsidemargin0cm
+\topmargin-2cm     
+\textwidth16.5cm   
+\textheight23.5cm  
+
+\newcommand{\question}[2] {\vspace{.25in} \hrule\vspace{0.5em}
+\noindent{\bf #1: #2} \vspace{0.5em}
+\hrule \vspace{.10in}}
+\renewcommand{\part}[1] {\vspace{.10in} {\bf (#1)}}
+
+\newcommand{\myname}{Jack Kasbeer}
+\newcommand{\myandrew}{jkasbeer@andrew.cmu.edu}
+\newcommand{\myhwnum}{07}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+ 
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{\textbf{HW\myhwnum}}}     
+\rhead{\fancyplain{}{\myname\\ \myandrew}}
+\chead{\fancyplain{}{15-150}}
+
+\begin{document}
+
+\medskip            
+\thispagestyle{plain}
+\begin{center} 
+{\Large 15-150 Assignment \myhwnum} \\
+\myname \\
+\myandrew \\
+Section K \\
+October 28, 2015 \\
+\end{center}
+
+% ##### TASK 2 ##### %
+\question{2}{Continuations}
+\begin{enumerate}
+% Task 2.1 
+\item \verb|findOne| is implemented in \verb|hw07.sml|
+% Task 2.2 
+\item \verb|findTwo| is implemented in \verb|hw07.sml|
+\end{enumerate}
+
+% ##### TASK 3 ##### %
+\question{3}{Advanced Path-Finding}
+\begin{enumerate}
+% Task 3.1 
+\item \verb|path| is implemented in \verb|hw07.sml|
+% Task 3.2 
+\item \verb|optionPath| is implemented in \verb|hw07.sml|
+% Task 3.3 
+\item No, the span of \verb|path| is not less than the work of \verb|path| because nothing is being executed in parallel.  We're only ever working with one branch of a tree; there are no simultaneous recursive calls to more than one branch.  Hence, the work and span will be the same. 
+% Task 3.4
+\item \verb|chop| is implemented in \verb|hw07.sml|
+% Task 3.5
+\item \verb|pathLength| is implemented in \verb|hw07.sml|
+\end{enumerate}
+
+% ##### TASK 4 ##### %
+\question{4}{Regexp}
+\begin{enumerate}
+% Task 4.1
+\item \verb|badDiff| is incorrect because \verb|not(match r2 cs k)| is a very different result than \verb|p|, from the match found in the call to \verb|match r1 cs k| (satisfying \verb|p@s == cs|), not being in \verb|L(r2)|; it will yield \verb|false| more often than it should.  This is because \verb|match| is going to be looking for ways to compose \verb|cs| with the language of \verb|r2|, which is incorrect.  Instead, after the first call to \verb|match|, the function should be checking to see if \verb|p| is in the language of \verb|r2|, and returning false if it is, and true otherwise.\\\\
+Consider the case of \verb|r1 = bo|, \verb|r2 = boo|, and our \verb|cs = ["b","o","o"]|. \\
+\verb|badDiff r1 r2 cs k => (match r1 cs k) andalso not(match r2 cs k)|.  Both calls to \verb|match| will evaluate to \verb|true| since the call to \verb|r1| will be matched by \verb|["b","o"] @ ["o"]|, and the second call to \verb|r2| will be matched by \verb|["b","o","o"] @ []|.  But, notice that \verb|true andalso not(true) => false|, which is an incorrect result.  The \verb|p| found in the first call to \verb|match| was \verb|["b","o"]|, and the specification requires that this is not in \verb|L(r2)|, which it isn't!  So this should, in fact, evaluate to \verb|true|.
+% Task 4.2
+\item \verb|diff| is implemented in \verb|hw07.sml|
+% Task 4.3
+\item Prove \textbf{Theorem 1:} 
+\begin{flushleft}
+For all values r1: \verb|regexp|, r2: \verb|regexp|, cs: \verb|char list|, k: \verb|char list -> bool|, if there exist values $p,s$ such that $p@s = cs$ with $p\in L(r)$ and $k \,s = $\verb|true|,\\
+then \verb|match| r cs k = \verb|true|.
+\end{flushleft}
+\begin{proof}
+Assume for all values r1: \verb|regexp|, r2: \verb|regexp|, cs: \verb|char list|, k: \verb|char list -> bool|, \verb|diff r1 r2 cs k = true|.\\
+WWTS that there exists $p,s$ such that $p@s = cs$, where $p\in L(r1/r2)$ and $k \,s =$ \verb|true|.\\\\
+By assumption and def. of \verb|diff|,\\
+\verb|diff r1 cs k =>|\\
+\verb|(match r1 cs (fn C => (k C) andalso not(match r2 cs (fn A => C = A)))) = true|.\\\\
+This implies that $\exists p,s$ such that $p@s = cs$, where $p\in L(r1)$ (by Theorem 2: Soundness).\\
+Notice that by binding \verb|L:s|, this means \verb|k s andalso not(match r2 cs (fn A => s = A)) = true|.  By Lemma 1, this trivially implies \verb|k s = true| and \verb|not(match r2 cs (fn A => s = A)) = true|.  And by Lemma 2, \verb|match r2 cs (fn A => s = A) = false| (use of \verb|not|).\\\\
+By Theorem 3, we know if there $\exists p,s$ such that $p@s = cs, p\in L(r2)$ and $k' \,s =$ \verb|true|, then \verb|match r2 cs k' = true|.  Since \verb|match r2 cs k' = false|, it must be the case that \verb|not(p|$\in L(r2)$ and \verb|k' s = true) is \verb|true|, or \verb|(p |$\in L(r2)$ and \verb|k' s = true| is false.  If this wasn't the case then completeness would not be maintained.  We know that \verb|k' s = true| for \verb|k' = (fn A => s = A)|, which means that $p \notin L(r2)$.\\\\
+By definition of Set Difference, $p \in L(r1)$ and $p \notin L(r2) \Rightarrow p \in L(r1/r2)$.  Hence, there exists $p,s$ such that $p@s = cs$, where $p \in L(r1/r2)$, and $k \,s = $\verb|true|, which means that \verb|diff r1 r2 cs k| is sound, proving \textbf{Theorem 1}, and we're done.
+\end{proof}
+% Task 4.4
+\item \verb|messageKey| is defined in \verb|hw07.sml|
+% Task 4.5
+\item \verb|findMessage| is implemented in \verb|hw07.sml|
+% Task 4.6
+\item After wandering through the cave aimlessly, I was able to find the treasure in the fountain: \verb|(fn x => (fn y => x))|.
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

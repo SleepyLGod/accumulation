@@ -1,0 +1,179 @@
+% hw09.tex 
+% Created by Jack Kasbeer (jkasbeer) on November 10, 2015
+%
+% Principles of Functional Programming
+% 15-150
+% Assignment 09
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{fancyhdr}
+
+\oddsidemargin0cm
+\topmargin-2cm     
+\textwidth16.5cm   
+\textheight23.5cm  
+
+\newcommand{\question}[2] {\vspace{.25in} \hrule\vspace{0.5em}
+\noindent{\bf #1: #2} \vspace{0.5em}
+\hrule \vspace{.10in}}
+\renewcommand{\part}[1] {\vspace{.10in} {\bf (#1)}}
+
+\newcommand{\myname}{Jack Kasbeer}
+\newcommand{\myandrew}{jkasbeer@andrew.cmu.edu}
+\newcommand{\myhwnum}{09}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+ 
+\pagestyle{fancyplain}
+\lhead{\fancyplain{}{\textbf{HW\myhwnum}}}     
+\rhead{\fancyplain{}{\myname\\ \myandrew}}
+\chead{\fancyplain{}{15-150}}
+
+\begin{document}
+
+\medskip            
+\thispagestyle{plain}
+\begin{center} 
+{\Large 15-150 Assignment \myhwnum} \\
+\myname \\
+\myandrew \\
+Section K \\
+November 10, 2015 \\
+\end{center}
+
+% ##### TASK 2 ##### %
+\question{2}{Bounding Boxes}
+\begin{enumerate}
+% Task 2.1 
+\item Functor \verb|Box| is implemented in \verb|box.sml|.
+\end{enumerate}
+
+% ##### TASK 3 ##### %
+\question{3}{Representation independence}
+\begin{enumerate}
+% Task 3.1 
+\item Prove that for all types \verb|t| and all values \verb|L : t list| that 
+\begin{center}\verb|Standard.fromList L| $\equiv$ \verb|Fun.fromList L|\end{center}
+\begin{proof}
+Let P(L) be the proposition that \verb|Standard.fromList L| $\equiv$ \verb|Fun.fromList L|.\\
+We will show that P(L) holds true for all lists L by structural induction (for lists).\\\\
+\textbf{Base Case:} L = \verb|[]|.. Let K be an arbitrary \verb|t list| such that  \verb|length(K)| is constant.\\
+By definition of \verb|Standard.fromList|, we have \verb|Standard.fromList ([] @ K) = [] @ K|, which is trivially just \verb|K|, by Lemma 2.\\
+Notice that \verb|K = foldr op :: K []|, by definition of \verb|foldr|.\\
+One step further, and \verb|(foldr op :: K []) = (fn xs => foldr op :: xs []) K|, by \verb|[xs:K]|.  Lastly, this is now the definition of \verb|Fun.fromList|,\\
+so \verb|(fn xs => foldr op :: xs []) K = (Fun.fromList []) K|.\\
+Hence, \verb|Standard.fromList []| $\equiv$ \verb|Fun.fromList []|, and the base case holds.\\\\
+Now, let L = \verb|y::ys| and assume that P(\verb|ys|) is true (\textbf{IH}) (\verb|K : t list| will also be used below).  WWTS that P(\verb|y::ys|) also holds.\\
+\textbf{Inductive Step:}  By definition of \verb|Standard.fromList|, we may say that\\
+\verb|Standard.fromList (y::ys)@K = (y::ys)@K|.\\
+By Lemma 3, \verb|(y::ys)@K = y::(ys@K) => y::(Standard.fromList (ys@K))|, by definition of \verb|Standard.fromList|.\\
+Now we can use our IH to say that this is equivalent to\\
+\verb|y::((Fun.fromList ys) K) = y::((fn xs => foldr op :: xs ys) K)|,\\
+by definition of \verb|Fun.fromList|.  Then, similar to our base case, we now have \verb|y::(foldr op :: K ys)|, by \verb|[xs:K]|. And by definition of \verb|op ::|, we can say that this is equivalent to\\
+ \verb|op :: (1, (foldr op :: K ys)|.  By \verb|foldr|, this is \verb|(foldr op :: K y::ys)|.\\
+Again using \verb|[xs:K]|, we have \verb|(fn xs => foldr op :: xs (y::ys)) K|.  This is now, by def. of \verb|Fun.fromList|, equivalent to \verb|Fun.fromList (y::ys) K|.\\
+Thus, \verb|Standard.fromList (y::ys) @ K| $\equiv$ \verb|Fun.fromList (y::ys) @ K|, by the definition of $equivalence$.\\\\
+Hence, by structural induction, P(L) holds for all lists of all sizes and we're done.
+\end{proof}
+% Task 3.2 
+\item Prove that for all types \verb|t| and all values \verb|L1, L2 : t Standard.List|, \verb|L1', L2' : t Fun.List|,
+\begin{center}
+if \verb|L1| $\equiv$ \verb|L1'| $\wedge$ \verb|L2| $\equiv$ \verb|L2'|, then 
+\verb|Standard.append L1 L2| $\equiv$ \verb|Fun.append L1' L2'|
+\end{center}
+\begin{proof}
+By equivalence, we can prove the above proposition by showing that for all \verb|K : t list|,
+\begin{center}
+if \verb|L1| $\equiv$ \verb|L1'| and \verb|L2| $\equiv$ \verb|L2'|, then
+\verb|(Standard.append L1 L2) @ K = (Fun.append L1' L2') K|.
+\end{center} 
+So assume that \verb|L1| $\equiv$ \verb|L1'| and \verb|L2| $\equiv$ \verb|L2'|, and let \verb|K| be an arbitrary \verb|t list|.\\
+By def. of \verb|Standard.append|, \verb|(Standard.append L1 L2) @ K = (L1 @ L2) @ K|.  Then by Lemma 1, we now have \verb|L1 @ (L2 @ K)|, which is equal to \verb|L1 @ (L2' K)| by assumption and the def. of equivalence.  Again by assumption and equivalence, we have \verb|L1' (L2' K)|.\\
+By def. of \verb|o|, \verb|L1' (L2' K) = (L1' o L2') K|, and finally by the def. of \verb|Fun.append|, this equates to \verb|Fun.append L1' L2'|.\\
+Thus, \verb|(Standard.append L1 L2) @ K = (Fun.append L1' L2') K|.\\\\
+Hence, \verb|Standard.append L1 L2| $\equiv$ \verb|Fun.append L1' L2'|, by the definition of $equivalence$.
+\end{proof}
+% Task 3.3 
+\item \verb|Standard.append| and \verb|Fun.append| differ mainly in the sense that they use a different number of cons operations.  \verb|Standard.append| uses more cons operations than \verb|Fun.append|, which is most easily seen in how \verb|append| is implemented in \verb|Standard.append|.  It appends lists using the \verb|@| operation, which performs as many cons operations as there are elements in \verb|xs|.   In contrast to this, \verb|Fun.append| does not perform cons operations until it's done appending lists (i.e. only on the final list).  Hence, the implementation for \verb|Fun.append| is less costly and more efficient.
+\end{enumerate}
+
+% ##### TASK 4 ##### %
+\question{4}{Dictionaries as functions}
+\begin{enumerate}
+% Task 4.1
+\item The functor \verb|FunDict| is implemented in \verb|dict.sml|.
+\end{enumerate}
+
+% ##### TASK 5 ##### %
+\question{5}{Polynomials over a ring}
+\begin{enumerate}
+% Task 5.1
+\item \verb|RatRing:RING| is implemented in \verb|ring.sml|.
+% Task 5.2
+\item The functor \verb|PowerRing| is implemented in \verb|ring.sml|.
+\end{enumerate}
+\newpage
+\question{6}{Red-Black Trees}
+\begin{enumerate}
+% Task 6.1
+\item Prove that if \verb|t = Node (l, (c, v), r)| is a valid red-black tree then so are both \verb|l| and \verb|r|.
+\begin{proof} It's sufficient to prove this by showing each property of red-black trees holds.\\\\
+\textbf{Property 1:} If \verb|t| is valid, then all of its leaves are black by definition.  Since \verb|t| is composed of \verb|l| and \verb|r|, all of the leaves in \verb|l| and \verb|r| are trivially black whether or not they're trees or leaves themselves.\\
+\textbf{Property 2:} If \verb|t| is valid, then the child of any red node is black.  Since all of \verb|t|'s children are either \verb|l|, \verb|r|, or one of these branches' children, the child of every red node in \verb|l| and \verb|r| is black.\\
+\textbf{Property 3:} If \verb|t| is valid, then each path from the root to a leaf has the same number of black nodes.  Suppose there are $n$ black nodes in these paths starting at \verb|t|.  \textbf{(1)} If the root of \verb|t| is red, then paths in \verb|l| and \verb|r| still have $n$ black nodes.  \textbf{(2)} If the root of \verb|t| is black, then every path in \verb|l| and \verb|r| still has the same number of black nodes, except it's now $n-1$ (root was black).\\\\
+Hence, if \verb|t| is valid, then \verb|l| and \verb|r| satisfy all the properties of a red-black tree, which means that \verb|l| and \verb|r| are also both valid trees.
+\end{proof}
+% Task 6.2
+\item Prove that for any red-black tree with a black-height of \verb|b| (that is, each path from the root to a leaf has \verb|b| black nodes not counting the leaf) then $2b \leq n$ where $n$ is the number of nodes in the tree (counting all leaves).
+\begin{proof}
+By structural induction on \verb|T|.\\
+\textbf{Base Case:} \verb|T| is a leaf.  Notice this implies that \verb|T| is black.  Since it's a leaf, \verb|b = 0| and \verb|n = 0|.  
+\[ 2^0 \leq 1 \Rightarrow 1 \leq 1 \]
+This is trivially true, so the base case holds.\\\\
+Let \verb|T = Node(L, (color, val), R)| be a valid red-black tree, and let \verb|b'| denote the black-height of \verb|T|.   By these assumptions, we know that
+\[ n = n_{left} + n_{right} + 1 \]
+Now assume that P(L) holds and P(R) holds.  In other words, $2^b \leq n_{left}$ and $2^b \leq n_{right}$ (IH).  We may assume that the left and right branches have the same $b$ because \verb|T| is a valid red-black tree, which means both \verb|L| and \verb|R| are also valid (proven in 6.1).\\
+WWTS 
+\[ 2^{b'} \leq n \]
+To do this, we'll case on the color of the root of \verb|T|...\\
+\textbf{Case 1:} \verb|color = Red|.. This means $b = b'$ since no additional black nodes are added to any of the paths.  Then by our IH, 
+\[ 2^b \leq n_{left} \Rightarrow 2^b \leq n_{left} + n_{right} + 1 \]
+by def. of $\leq$.\\
+Since $n = n_{left} + n_{right} + 1$, it's clear that $2^{b'} \leq n$.\\
+\textbf{Case 2:} \verb|color = Black|.. In contrast to Case 1, this means that $b' = b + 1$ because the root of \verb|T| being \verb|Black| adds a black node to every path.  By adding the inequalities from our IH, we have 
+\[ 2^b + 2^b \leq n_{left} + n_{right} \Rightarrow 2^{b+1} \leq n_{left} + n_{right} \Rightarrow 2^{b+1} \leq n_{left} + n_{right} + 1 \]
+by def. of $\leq$.\\
+Hence, $2^{b'} \leq n$ because $b' = b + 1$ and $n = n_{left} + n_{right} + 1$.
+\end{proof}
+% Task 6.3
+\item Prove that a red-black tree with \verb|n| nodes has a height in $O$(log($n$)).
+\begin{proof} By sub-claims..\\
+\textbf{Sub-claim 1:} Black-height of tree with height $h$, $b \geq h/2$.\\
+We know that $h$ is the longest path to the leaf by definition, and the worst case occurs when the nodes alternate between \verb|Red| and \verb|Black|.  This is  the worst case because when a node is \verb|Red|, both its children must be \verb|Black|, which means that number of \verb|Red| nodes $\leq h/2$.  This then means that the number of \verb|Black| nodes $\geq h/2$.\\
+\begin{center} INCOMPLETE\end{center}
+\end{proof}
+\end{enumerate}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
