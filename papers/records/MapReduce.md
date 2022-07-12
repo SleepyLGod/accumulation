@@ -6,27 +6,30 @@
 
 用户则通过编写 `Map `函数和 `Reduce `函数来指定所要进行的计算
 
-由用户编写的 Map 函数将被应用在每一个**输入**键值对上，并输出若干键值对作为中间结果
+由用户编写的 Map 函数将被应用在每一个**输入**键值对上，并输出若干键值对作为**中间结果**
 
-之后，MapReduce 框架则会将与同一个键 II 相关联的值都传递到同一次 Reduce 函数调用中。
+之后，MapReduce 框架则会**将与同一个键 II 相关联的值都传递到同一次 `Reduce `函数调用中**。
 
-同样由用户编写的 Reduce 函数以键 II 以及与该键相关联的值的集合作为参数，对传入的值进行合并并输出合并后的值的集合。
+同样由用户编写的 `Reduce `函数以**键 II 以及与该键相关联的值的集合**作为参数，**对传入的值进行合并并输出合并后的值的集合**。
 
 形式化地说，由用户提供的 Map 函数和 Reduce 函数应有如下类型：
 
-`[Math Processing Error]map(k1,v1)→list(k2,v2) reduce(k2,list(v2))→list(v2)`
+**`[Math Processing Error] `**
 
-值得注意的是，在实际的实现中 MapReduce 框架使用 `Iterator` 来代表作为输入的集合，主要是为了避免集合过大，无法被完整地放入到内存中。
+**`map(k1, v1) → list(k2, v2) `**
+
+**`reduce(k2, list(v2)) → list(v2)`**
+
+值得注意的是，在实际的实现中 `MapReduce `框架使用 `Iterator` 来代表作为输入的集合，主要是为了避免集合过大，无法被完整地放入到内存中。
 
 作为案例，我们考虑这样一个问题：给定大量的文档，计算其中每个单词出现的次数（Word Count）。用户通常需要提供形如如下伪代码的代码来完成计算：
 
-```
+```c++
 map(String key, String value):
   // key: document name
   // value: document contents
   for each word w in value:
     EmitIntermediate(w, “1”);
-
 
 reduce(String key, Iterator values):
   // key: a word
@@ -37,7 +40,7 @@ reduce(String key, Iterator values):
   Emit(AsString(result));
 ```
 
-### 函数式编程模型
+### **函数式编程模型**
 
 了解函数式编程范式的读者不难发现，MapReduce 所采用的编程模型源自于函数式编程里的 Map 函数和 Reduce 函数。后起之秀 Spark 同样采用了类似的编程模型。
 
@@ -63,11 +66,11 @@ reduce(String key, Iterator values):
 
 值得注意的是，每次 MapReduce 任务执行时，MM 和 RR 的值都应比集群中的 Worker 数量要高得多，以达成集群内负载均衡的效果。
 
-## MapReduce 容错机制
+## **MapReduce 容错机制**
 
 由于 Google MapReduce 很大程度上利用了由 Google File System 提供的分布式原子文件读写操作，所以 MapReduce 集群的容错机制实现相比之下便简洁很多，也主要集中在任务意外中断的恢复上。
 
-### Worker 失效
+### **Worker 失效**
 
 在 MapReduce 集群中，Master 会周期地向每一个 Worker 发送 Ping 信号。如果某个 Worker 在一段时间内没有响应，Master 就会认为这个 Worker 已经不可用。
 
@@ -75,29 +78,29 @@ reduce(String key, Iterator values):
 
 如果有 Reduce 任务分配给该 Worker，Master 则会选取其中尚未完成的 Reduce 任务分配给其他 Worker。鉴于 Google MapReduce 的结果是存储在 Google File System 上的，已完成的 Reduce 任务的结果的可用性由 Google File System 提供，因此 MapReduce Master 只需要处理未完成的 Reduce 任务即可。
 
-### Master 失效
+### **Master 失效**
 
 整个 MapReduce 集群中只会有一个 Master 结点，因此 Master 失效的情况并不多见。
 
 Master 结点在运行时会周期性地将集群的当前状态作为保存点（Checkpoint）写入到磁盘中。Master 进程终止后，重新启动的 Master 进程即可利用存储在磁盘中的数据恢复到上一次保存点的状态。
 
-### 落后的 Worker
+### **落后的 Worker**
 
 如果集群中有某个 Worker 花了特别长的时间来完成最后的几个 Map 或 Reduce 任务，整个 MapReduce 计算任务的耗时就会因此被拖长，这样的 Worker 也就成了落后者（Straggler）。
 
 MapReduce 在整个计算完成到一定程度时就会将剩余的任务进行备份，即同时将其分配给其他空闲 Worker 来执行，并在其中一个 Worker 完成后将该任务视作已完成。
 
-## 其他优化
+## **其他优化**
 
 在高可用的基础上，Google MapReduce 系统现有的实现同样采取了一些优化方式来提高系统运行的整体效率。
 
-### 数据本地性
+### **数据本地性**
 
 在 Google 内部所使用的计算环境中，机器间的网络带宽是比较稀缺的资源，需要尽量减少在机器间过多地进行不必要的数据传输。
 
 Google MapReduce 采用 Google File System 来保存输入和结果数据，因此 Master 在分配 Map 任务时会从 Google File System 中读取各个 Block 的位置信息，并尽量将对应的 Map 任务分配到持有该 Block 的 Replica 的机器上；如果无法将任务分配至该机器，Master 也会利用 Google File System 提供的机架拓扑信息将任务分配到较近的机器上。
 
-### Combiner
+### **Combiner**
 
 在某些情形下，用户所定义的 Map 任务可能会产生大量重复的中间结果键，同时用户所定义的 Reduce 函数本身也是满足交换律和结合律的。
 
