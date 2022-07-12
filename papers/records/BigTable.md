@@ -219,25 +219,33 @@ Memtable 与 SSTable 本身都采取了**数据不可变**的设计思路：
 
 Bigtable 允许客户端为 Column Family 指定一个 Locality Group（位置组），并以 Locality Group 为基础指定其实际的文件存储格式以及压缩方式。
 
- Compaction 操作时，Bigtable 会为 Tablet 中的每个 Locality Group 生成独立的 SSTable 文件。由此，用户便可将那些很少同时访问的 Column Famliy 放入到不同的 Locality Group 中，以提高查询效率。除外 Bigtable 也提供了其他基于 Locality Group 的调优参数设置，如设置某个 Locality Group 为 in-memory 等。
+ Compaction 操作时，Bigtable 会为 Tablet 中的**每个 Locality Group 生成独立的 SSTable 文件**。由此，用户便可将那些**很少同时访问的 Column Famliy 放入到不同的 Locality Group 中**，以提高查询效率。除外 Bigtable 也提供了其他基于 Locality Group 的调优参数设置，如设置某个 Locality Group 为 in-memory 等。
 
-在压缩方面，Bigtable 允许用户指定某个 Locality Group 是否要对数据进行压缩以及使用何种格式进行压缩。值得注意的是，Bigtable 对 SSTable 的压缩是基于 SSTable 文件的 Block 进行的，而不是对整个文件直接进行压缩。尽管这会让压缩的效率下降，但这也使得用户在读取数据时 Bigtable 只需要对 SSTable 的某些 Block 进行解压。
+在压缩方面，Bigtable 允许用户指定某个 Locality Group **是否**要对数据进行压缩以及**使用何种格式进行压缩**。值得注意的是，Bigtable 对 SSTable 的压缩是基于 SSTable 文件的 **Block **进行的，而不是对整个文件直接进行压缩。尽管这会让压缩的效率下降，但这也使得用户在读取数据时 Bigtable **只需要对 SSTable 的某些 Block 进行解压**。
 
 #### **读缓存与 Bloom Filter**
 
-了解过 LSM Tree 的读者可能已经意识到，Bigtable 使用的存储方式正是 LSM Tree：这种存储方式可以将对磁盘的随机写转换为顺序写，代价则是读取性能的下降。LSM Tree 被应用在 Bigtable 上是合情合理的，毕竟 Bigtable 的文件实际上存储在 GFS 中，而 GFS 主要针对顺序写进行优化，对随机写的支持可以说是极差。那么 Bigtable 在使用 LSM Tree 确保了写入性能后，当然就要通过其他的方式来确保自己的读性能了。首先便是读缓存。
+Bigtable 使用的存储方式是 LSM Tree:
 
-总的来说，Bigtable 的读缓存由两个缓存层组成：Scan Cache 和 Block Cache。Block Cache 会缓存从 GFS 中读出的 SSTable 文件 Block，提高客户端读取某个数据附近的其他数据的效率；Scan Cache 则在 Block Cache 之上，缓存由 SSTable 返回给 Tablet Server 的键值对，以提高客户端重复读取相同数据的效率。
++ 将对磁盘的随机写转换为顺序写，代价则是读取性能的下降
 
-除外，为了提高检索的效率，Bigtable 也允许用户为某个 Locality Group 开启 Bloom Filter 机制，通过消耗一定量的内存保存为 SSTable 文件构建的 Bloom Filter，以在客户端检索记录时利用 Bloom Filter 快速地排除某些不包含该记录的 SSTable，减少需要读取的 SSTable 文件数。
++ 原因： Bigtable 的文件实际上存储在 GFS 中，而 GFS 主要针对顺序写进行优化，对随机写的支持极差
++ 那么 Bigtable 在使用 LSM Tree 确保了写入性能后，当然就要通过其他的方式来确保自己的读性能了。首先便是**读缓存**：
++ 总的来说，Bigtable 的读缓存由**两个缓存层**组成：**Scan Cache 和 Block Cache**：
+  + Block Cache 会缓存**从 GFS 中读出的 SSTable 文件 Block**，提高客户端**读取某个数据附近**的其他数据的效率；
+  + Scan Cache 则在 Block Cache 之上，缓存**由 SSTable 返回给 Tablet Server 的键值对**，以提高客户端**重复读取相同数据**的效率。
+
+除外，为了提高检索的效率，Bigtable 也允许用户为某个 Locality Group 开启 **Bloom Filter** 机制，通过消耗一定量的内存保存为 SSTable 文件构建的 Bloom Filter，以在客户端检索记录时利用 Bloom Filter 快速地**排除**某些不包含该记录的 SSTable，减少需要读取的 SSTable 文件数。
 
 #### **Commit Log**
 
-Bigtable 使用了 Write-Ahead Log 的做法来确保数据高可用，那么便涉及了大量对 Commit Log 的写入，因此这也是个值得优化的地方。
+Bigtable 使用 Write-Ahead Log 的做法来确保数据高可用，那么便涉及了大量对 Commit Log 的写入
 
-首先，如果 Bigtable 为不同的 Tablet 使用不同的 Commit Log，那么系统就会有大量的 Commit Log 文件同时写入，提高了底层磁盘寻址的时间消耗。为此，Tablet Server 会把其接收到的所有 Tablet 写入操作写入到同一个 Commit Log 文件中。
+首先，如果 Bigtable 为不同的 Tablet 使用不同的 Commit Log，那么系统就会有大量的 Commit Log 文件**同时写入**，提高了底层磁盘寻址的时间消耗。为此，Tablet Server 会把其接收到的所有 Tablet 写入操作写入到**同一个 Commit Log 文件**中。
 
-这样的设计带来了另一个问题：如果该 Tablet Server 下线，其所负责的 Tablet 可能会被重新分配到其他若干个 Tablet Server 上，它们在恢复 Tablet MemTable 的过程中会重复读取上一个 Tablet Server 产生的 Commit Log。为了解决该问题，Tablet Server 在读取 Commit Log 前会向 Master 发送信号，Master 就会发起一次对原 Commit Log 的排序操作：原 Commit Log 会按 64 MB 切分为若干部分，每个部分并发地按照 `(table, row name, log sequence number)` 进行排序。完成排序后，Tablet Server 读取 Commit Log 时便可只读取自己需要的那一部分，减少重复读取。
+这样的设计带来了另一个问题：如果该 Tablet Server 下线，其所负责的 Tablet 可能会被重新分配到其他若干个 Tablet Server 上，它们在恢复 Tablet MemTable 的过程中会重复读取上一个 Tablet Server 产生的 Commit Log。为了解决该问题，**Tablet Server 在读取 Commit Log 前会向 Master 发送信号**，Master 就会**发起一次对原 Commit Log 的排序操作：**
+
+原 Commit Log 会按 **64 **MB 切分为若干部分，每个部分**并发**地按照 **`(table, row name, log sequence number)` **进行排序。完成排序后，Tablet Server 读取 Commit Log 时便可只读取自己需要的那一部分，减少重复读取。
 
 
 
