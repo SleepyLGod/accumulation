@@ -14,7 +14,7 @@
 
 形式化地说，由用户提供的 Map 函数和 Reduce 函数应有如下类型：
 
-*[Math Processing Error]map(k1,v1)→list(k2,v2) reduce(k2,list(v2))→list(v2)* 
+`[Math Processing Error]map(k1,v1)→list(k2,v2) reduce(k2,list(v2))→list(v2)`
 
 值得注意的是，在实际的实现中 MapReduce 框架使用 `Iterator` 来代表作为输入的集合，主要是为了避免集合过大，无法被完整地放入到内存中。
 
