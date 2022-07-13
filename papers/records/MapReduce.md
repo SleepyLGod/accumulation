@@ -52,17 +52,27 @@ reduce(String key, Iterator values):
 
 [![img](https://mr-dai.github.io/img/mapreduce_summary/mapreduce_architecture.png)](https://mr-dai.github.io/img/mapreduce_summary/mapreduce_architecture.png)
 
-首先，用户通过 MapReduce 客户端指定 Map 函数和 Reduce 函数，以及此次 MapReduce 计算的配置，包括中间结果键值对的 Partition 数量 RR 以及用于切分中间结果的哈希函数 hashhash。
+首先，用户通过 MapReduce **客户端指定** Map 函数和 Reduce 函数，以及此次 MapReduce 计算的配置，包括中间结果键值对的 Partition 数量 `R `以及用于**切分中间结果**的哈希函数 `hash`。
 用户开始 MapReduce 计算后，整个 MapReduce 计算的流程可总结如下：
 
-1. 作为输入的文件会被分为 MM 个 Split，每个 Split 的大小通常在 16~64 MB 之间
-2. 如此，整个 MapReduce 计算包含 MM 个Map 任务和 RR 个 Reduce 任务。Master 结点会从空闲的 Worker 结点中进行选取并为其分配 Map 任务和 Reduce 任务
-3. 收到 Map 任务的 Worker 们（又称 Mapper）开始读入自己对应的 Split，将读入的内容解析为输入键值对并调用由用户定义的 Map 函数。由 Map 函数产生的中间结果键值对会被暂时存放在缓冲内存区中
-4. 在 Map 阶段进行的同时，Mapper 们周期性地将放置在缓冲区中的中间结果存入到自己的本地磁盘中，同时根据用户指定的 Partition 函数（默认为 hash(key)hash(key) modmod RR）将产生的中间结果分为 RR 个部分。任务完成时，Mapper 便会将中间结果在其本地磁盘上的存放位置报告给 Master
-5. Mapper 上报的中间结果存放位置会被 Master 转发给 Reducer。当 Reducer 接收到这些信息后便会通过 RPC 读取存储在 Mapper 本地磁盘上属于对应 Partition 的中间结果。在读取完毕后，Reducer 会对读取到的数据进行排序以令拥有相同键的键值对能够连续分布
-6. 之后，Reducer 会为每个键收集与其关联的值的集合，并以之调用用户定义的 Reduce 函数。Reduce 函数的结果会被放入到对应的 Reduce Partition 结果文件
+1. 作为输入的文件会被分为 M 个 Split，每个 Split 的大小通常在 16~64 MB 之间
 
-实际上，在一个 MapReduce 集群中，Master 会记录每一个 Map 和 Reduce 任务的当前完成状态，以及所分配的 Worker。除此之外，Master 还负责将 Mapper 产生的中间结果文件的位置和大小转发给 Reducer。
+2. 如此，整个 MapReduce 计算包含 `M `个Map 任务和 `R `个 Reduce 任务。Master 结点会从**空闲的 Worker 结点**中进行选取并为其分配 Map 任务和 Reduce 任务
+
+3. 收到 Map 任务的 Worker 们（又称 **Mapper**）开始读入自己对应的 Split，将读入的内容**解析为输入键值对**并调用由用户定义的 **Map 函数**。由 Map 函数产生的中间结果键值对会被暂时存放在**缓冲内存区**中
+
+4. 在 Map 阶段进行的同时，Mapper 们**周期性地将放置在缓冲区中的中间结果存入到自己的本地磁盘**中，同时根据用户指定的 `Partition `函数（默认为 `hash(key) mod R`）将产生的中间结果分为 `R` 个部分。
+
+   任务完成时，Mapper 便会将中间结果在其本地磁盘上的存放**位置**报告给 Master
+
+5. Mapper 上报的中间结果**存放位置会被 Master 转发给 Reducer**。当 Reducer 接收到这些信息后便会通过 **RPC 读取**存储在 Mapper 本地磁盘上属于对应 Partition 的中间结果。在读取完毕后，Reducer 会对读取到的数据进行**排序以令拥有相同键的键值对能够连续分布**
+
+6. 之后，Reducer 会为每个键收集与其关联的值的集合，并以之调用用户定义的 Reduce 函数。Reduce 函数的结果会被放入到对应的 **Reduce Partition 结果文件**
+
+实际上，在一个 MapReduce 集群中: 
+
+- Master 会记录每一个 Map 和 Reduce 任务的当前完成状态，以及所分配的 Worker。
+- Master 还负责将 Mapper 产生的中间结果文件的位置和大小转发给 Reducer。
 
 值得注意的是，每次 MapReduce 任务执行时，MM 和 RR 的值都应比集群中的 Worker 数量要高得多，以达成集群内负载均衡的效果。
 
@@ -72,9 +82,11 @@ reduce(String key, Iterator values):
 
 ### **Worker 失效**
 
-在 MapReduce 集群中，Master 会周期地向每一个 Worker 发送 Ping 信号。如果某个 Worker 在一段时间内没有响应，Master 就会认为这个 Worker 已经不可用。
+在 MapReduce 集群中，Master 会周期地向每一个 Worker 发送 **Ping **信号。如果某个 Worker 在一段时间内没有响应，Master 就会认为这个 Worker 已经不可用。
 
-任何分配给该 Worker 的 Map 任务，无论是正在运行还是已经完成，都需要由 Master 重新分配给其他 Worker，因为该 Worker 不可用也意味着存储在该 Worker 本地磁盘上的中间结果也不可用了。Master 也会将这次重试通知给所有 Reducer，没能从原本的 Mapper 上完整获取中间结果的 Reducer 便会开始从新的 Mapper 上获取数据。
+**任何**分配给该 Worker 的 Map 任务，无论是正在运行还是已经完成，都需要由 Master 重新分配给其他 Worker，因为该 Worker 不可用也意味着**存储在该 Worker 本地磁盘上的中间结果也不可用了**。
+
+Master 也会将这次重试通知给所有 Reducer，没能从原本的 Mapper 上完整获取中间结果的 Reducer 便会开始从新的 Mapper 上获取数据。
 
 如果有 Reduce 任务分配给该 Worker，Master 则会选取其中尚未完成的 Reduce 任务分配给其他 Worker。鉴于 Google MapReduce 的结果是存储在 Google File System 上的，已完成的 Reduce 任务的结果的可用性由 Google File System 提供，因此 MapReduce Master 只需要处理未完成的 Reduce 任务即可。
 
@@ -82,11 +94,11 @@ reduce(String key, Iterator values):
 
 整个 MapReduce 集群中只会有一个 Master 结点，因此 Master 失效的情况并不多见。
 
-Master 结点在运行时会周期性地将集群的当前状态作为保存点（Checkpoint）写入到磁盘中。Master 进程终止后，重新启动的 Master 进程即可利用存储在磁盘中的数据恢复到上一次保存点的状态。
+Master 结点在运行时会**周期性地将集群的当前状态作为保存点（Checkpoint）写入到磁盘中**。Master 进程终止后，重新启动的 Master 进程即可利用存储在磁盘中的数据恢复到上一次保存点的状态。
 
 ### **落后的 Worker**
 
-如果集群中有某个 Worker 花了特别长的时间来完成最后的几个 Map 或 Reduce 任务，整个 MapReduce 计算任务的耗时就会因此被拖长，这样的 Worker 也就成了落后者（Straggler）。
+如果集群中有某个 Worker **花了特别长的时间来完成最后的几个 Map 或 Reduce 任务**，整个 MapReduce 计算任务的耗时就会因此被拖长，这样的 Worker 也就成了落后者（**Straggler**）。
 
 MapReduce 在整个计算完成到一定程度时就会将剩余的任务进行备份，即同时将其分配给其他空闲 Worker 来执行，并在其中一个 Worker 完成后将该任务视作已完成。
 
@@ -102,6 +114,6 @@ Google MapReduce 采用 Google File System 来保存输入和结果数据，因�
 
 ### **Combiner**
 
-在某些情形下，用户所定义的 Map 任务可能会产生大量重复的中间结果键，同时用户所定义的 Reduce 函数本身也是满足交换律和结合律的。
+在某些情形下，用户所定义的 Map 任务可能会产生大量**重复的中间结果键**，同时用户所定义的 Reduce 函数本身也是满足交换律和结合律的。
 
-在这种情况下，Google MapReduce 系统允许用户声明在 Mapper 上执行的 Combiner 函数：Mapper 会使用由自己输出的 RR 个中间结果 Partition 调用 Combiner 函数以对中间结果进行局部合并，减少 Mapper 和 Reducer 间需要传输的数据量。
+在这种情况下，Google MapReduce 系统允许用户声明在 **Mapper 上执行的 Combiner 函数**：Mapper 会使用由自己输出的 R 个中间结果 Partition 调用 Combiner 函数以对中间结果进行局部合并，减少 Mapper 和 Reducer 间需要传输的数据量。

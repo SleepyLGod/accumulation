@@ -6,10 +6,14 @@
 
 恰好`pthread`包含这几种锁的API，而`C++11`只包含其中的部分。接下来我将通过`pthread`的API来展开回答。
 
-## mutex（互斥量）
+## ***mutex（互斥量）***
 
-mutex（mutual   exclusive）即互斥量（互斥体）。也便是常说的互斥锁。
-尽管名称不含lock，但是称之为锁，也是没有太大问题的。mutex无疑是最常见的多线程同步方式。其思想简单粗暴，多线程共享一个互斥量，然后线程之间去竞争。得到锁的线程可以进入临界区执行代码。
+`mutex`（mutual   exclusive）即互斥量（互斥体）。也便是常说的互斥锁。
+尽管名称不含lock，但是称之为锁，也是没有太大问题的。
+
+`mutex`无疑是最常见的多线程同步方式。其思想简单粗暴，多线程共享一个互斥量，然后线程之间去竞争。
+
+得到锁的线程可以进入临界区执行代码。
 
 ```c
 // 声明一个互斥量    
@@ -24,21 +28,25 @@ pthread_mutex_unlock(&mtx);
 pthread_mutex_destroy(&mtx); 
 ```
 
-mutex是睡眠等待（sleep waiting）类型的锁，当线程抢互斥锁失败的时候，线程会陷入休眠。优点就是节省CPU资源，缺点就是休眠唤醒会消耗一点时间。另外自从Linux 2.6版以后，mutex完全用[futex](https://www.zhihu.com/search?q=futex&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A1267625567})的API实现了，内部系统调用的开销大大减小。
+`mutex`是睡眠等待（**sleep waiting**）类型的锁
 
-值得一提的是，pthread的锁一般都有一个trylock的函数，比如对于互斥量：
+当线程抢互斥锁失败的时候，线程会陷入休眠。
+
+优点就是节省CPU资源，缺点就是休眠唤醒会消耗一点时间。另外自从Linux 2.6版以后，mutex完全用[**`futex`**](https://www.zhihu.com/search?q=futex&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra={"sourceType"%3A"answer"%2C"sourceId"%3A1267625567})的API实现了，内部系统调用的开销大大减小。
+
+值得一提的是，pthread的锁一般都有一个`trylock`的函数，比如对于互斥量：
 
 ```c
 ret = pthread_mutex_trylock(&mtx);
 if (0 == ret) { // 加锁成功
     ... 
     pthread_mutex_unlock(&mtx);
-} else if(EBUSY == ret){ // 锁正在被使用;
+} else if (EBUSY == ret) { // 锁正在被使用;
     ... 
 }
 ```
 
-pthread_mutex_trylock用于以非阻塞的模式来请求互斥量。就好比各种IO函数都有一个noblock的模式一样，对于加锁这件事也有类似的非阻塞模式。
+`pthread_mutex_trylock`用于以非阻塞的模式来请求互斥量。就好比各种IO函数都有一个noblock的模式一样，对于加锁这件事也有类似的非阻塞模式。
 
 当线程尝试加锁时，如果锁已经被其他线程锁定，该线程就会阻塞住，直到能成功acquire。但有时候我们不希望这样。pthread_mutex_trylock在被其他线程锁定时，会返回特殊错误码。加锁成返回0，仅当成功但时候，我们才能解锁在后面进行解锁操作！
 
@@ -245,3 +253,8 @@ int pthread_spin_init (pthread_spinlock_t *lock, int pshared) {
 1. [^](#ref_1_0)1 **https://en.wikipedia.org/wiki/Reentrant_mutex#Practical_use**
 2. [^](#ref_2_0)2 [**https://books.google.com.hk/books?id=Ps2SH727eCIC&pg=PA647&lpg=PA647&dq=linux+programming+interface+wait+morphing&source=bl&ots=kMKcz2zPC7&sig=ACfU3U1ZSbxBegrQhuVkfNAMTRkY-YavvA&hl=en&sa=X&redir_esc=y&hl=zh-CN&sourceid=cndr#v=onepage&q=linux%20programming%20interface%20wait%20morphing&f=false**](https://books.google.com.hk/books?id=Ps2SH727eCIC&pg=PA647&lpg=PA647&dq=linux+programming+interface+wait+morphing&source=bl&ots=kMKcz2zPC7&sig=ACfU3U1ZSbxBegrQhuVkfNAMTRkY-YavvA&hl=en&sa=X&redir_esc=y&hl=zh-CN&sourceid=cndr#v=onepage&q=linux programming interface wait morphing&f=false)
 3. [^](#ref_3_0)3 **https://github.com/lattera/glibc/blob/895ef79e04a953cac1493863bcae29ad85657ee1/nptl/pthread_spin_init.c**
+
+
+
+# **C++11**
+

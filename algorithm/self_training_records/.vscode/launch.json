@@ -28,8 +28,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "d:/Vscode_C++/LG",
-      "program": "d:/Vscode_C++/LG/build/Debug/outDebug",
+      "cwd": "d:/gitrepositories/Accumulation/algorithm/self_training_records/luogu",
+      "program": "d:/gitrepositories/Accumulation/algorithm/self_training_records/luogu/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "D:/mingw64/bin/gdb.exe",
       "setupCommands": [

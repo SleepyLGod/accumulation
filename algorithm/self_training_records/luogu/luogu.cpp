@@ -3230,31 +3230,78 @@ int main(){
 //     return x * symbol;
 // }
 
-#include<bits/stdc++.h>
-using namespace std;
-inline int readInt();  
-const int maxn = 1;
-int main() {
-    printf("hello");
-    return 0;
-} 
+// #include<bits/stdc++.h>
+// using namespace std;
+// inline int readInt();  
+// const int maxn = 1;
+// int main() {
+//     printf("hello");
+//     return 0;
+// } 
 
-inline int readInt() {
-    int x = 0;
-    int symbol = 1;
-    char c = getchar();
-    while (c < '0' || c > '9') {
-        if (c == '-') {
-            symbol = -1;
-            c = getchar();
-        }
-    }
-    while (c >= '0' && c <= '9') {
-        x = (x << 3) + (x << 1) + (c ^ 48);
-        c = getchar();
-    }
-    return x * symbol;
+// inline int readInt() {
+//     int x = 0;
+//     int symbol = 1;
+//     char c = getchar();
+//     while (c < '0' || c > '9') {
+//         if (c == '-') {
+//             symbol = -1;
+//             c = getchar();
+//         }
+//     }
+//     while (c >= '0' && c <= '9') {
+//         x = (x << 3) + (x << 1) + (c ^ 48);
+//         c = getchar();
+//     }
+//     return x * symbol;
     
+// }
+
+#include <iostream>
+#include <thread>
+#include <string>
+#include <mutex>
+#include <condition_variable>
+#include <deque>
+#include <chrono>
+
+std::deque<int> q;
+std::mutex mu;
+std::condition_variable condi;
+
+void function_1() {
+	int count = 10;
+	while (count > 0) {
+		std::unique_lock<std::mutex> locker(mu);
+		q.push_back(count);
+		locker.unlock();
+		condi.notify_one();			//通知一个等待线程激活   condi.notify_all()激活所有线程
+		count--;
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+}
+
+void function_2() {
+	int data = 100;
+	while (data > 1) {
+		std::unique_lock<std::mutex> locker(mu);
+		condi.wait(locker,			// 解锁locker,并进入休眠  收到notify时又重新加锁
+			[]() { return !q.empty(); });   // 如果q不为空 线程才会被激活
+		data = q.front();
+		q.pop_front();
+		locker.unlock();
+
+		std::cout << data << std::endl;
+	}
+}
+int main() {
+	std::thread t1(function_1);
+	std::thread t2(function_2);
+
+	t1.join();
+	t2.join();
+	
+	return 0;
 }
 
  
