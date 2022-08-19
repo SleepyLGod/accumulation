@@ -28,10 +28,10 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "d:/gitrepositories/Accumulation/algorithm/self_training_records/luogu",
-      "program": "d:/gitrepositories/Accumulation/algorithm/self_training_records/luogu/build/Debug/outDebug",
+      "cwd": "/home/dong/Git-repos/Accumulation/algorithm/self_training_records/csp",
+      "program": "/home/dong/Git-repos/Accumulation/algorithm/self_training_records/csp/build/Debug/outDebug",
       "MIMode": "gdb",
-      "miDebuggerPath": "D:/mingw64/bin/gdb.exe",
+      "miDebuggerPath": "gdb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
