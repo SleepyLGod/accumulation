@@ -1,5 +1,5 @@
 /**
- * @file template.htmlinclude 
+ * @file 202104-3.cpp
  * @author dong
  * @brief 
  * @version 0.1
@@ -48,8 +48,10 @@ inline ll readLong() {
     return ans * symbol;
 }
 
-/*
+int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(NULL);
     std::cout.tie(NULL);
-*/
+    
+    return 0;
+}
