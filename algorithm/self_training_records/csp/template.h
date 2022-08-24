@@ -12,6 +12,8 @@
 #include <bits/stdc++.h>
 #define forEachPlus(i, a, b) for(int i = (a); i <= (b); ++i)
 #define forEachMinus(i, a, b) for(int i = (a); i >= (b); --i)
+#define forEachPlusJump(i, a, b, t) for(int i = (a); i <= (b); i += (t))
+#define forEachMinusJump(i, a, b, t) for(int i = (a); i >= (b); i -= (t))
 typedef long long ll;
 inline int readInt() {
   int ans = 0;
